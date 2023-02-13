@@ -14,6 +14,6 @@ int main() {
             }
         }
     }
-    std::printf("%.6f", (_density / input.length()) * 100);
+    std::cout << _density / input.length() * 100 << std::endl;
     return 0;
 }
