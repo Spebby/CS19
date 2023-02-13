@@ -2,26 +2,25 @@
 #include <string>
 
 int main() {
-    float _density = 0;
-    int _length = 0;
-    while (!std::cin.eof()) {
-        std::string input;
-        std::cin >> input;
-
-        for (int i = 0; (unsigned)i < input.length(); i++) {
-            if (input[i] == 'G' || input[i] == 'C') {
-                _density++;
-            } else if (input[i] != 'A' && input[i] != 'T') {
-                input.erase(i, 1);
-                i--;
+    float _gcDensity = 0, _atDensity = 0;
+    constexpr unsigned BUFFERSIZE = 8192;   
+    // no need to check eof, if gcount is less then buffer length, we're at the end.
+    char buffer[BUFFERSIZE];
+    for (std::cin.read(buffer, BUFFERSIZE); std::cin.gcount() > 0; std::cin.read(buffer, BUFFERSIZE)) {
+        for (unsigned i = 0; i < std::cin.gcount(); i++) {
+            switch (buffer[i]) {
+                case 'G':
+                case 'C':
+                    _gcDensity++;
+                    break;
+                case 'A':
+                case 'T':
+                    _atDensity++;
+                    break;
             }
         }
-        _length += input.length();
     }
 
-    if (_length == 0)
-        std::cout << 0 << std::endl;
-    else
-        std::cout << _density / _length * 100 << std::endl;
+    printf("%f\n", (_gcDensity / (_gcDensity + _atDensity + .000000001) * 100));
     return 0;
 }
