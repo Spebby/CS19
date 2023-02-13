@@ -4,7 +4,7 @@
 int main() {
     float _density = 0;
     int _length = 0;
-    while(!std::cin.eof()) {
+    while (!std::cin.eof()) {
         std::string input;
         std::cin >> input;
 
@@ -19,6 +19,9 @@ int main() {
         _length += input.length();
     }
 
-    std::cout << _density / _length * 100 << std::endl;
+    if (_length == 0)
+        std::cout << 0 << std::endl;
+    else
+        std::cout << _density / _length * 100 << std::endl;
     return 0;
 }
