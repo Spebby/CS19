@@ -2,18 +2,23 @@
 #include <string>
 
 int main() {
-    std::string input;
-    std::getline(std::cin, input);
-    //std::cout << input << ": " << input.length() << std::endl;
     float _density = 0;
-    for (int i = 0; (unsigned)i < input.length(); i++) {
-        if (input[i] == 'G' || input[i] == 'C') {
-            _density++;
-        } else if (input[i] != 'A' && input[i] != 'T') {
-            input.erase(i, 1);
-            i--;
+    int _length = 0;
+    while(!std::cin.eof()) {
+        std::string input;
+        std::cin >> input;
+
+        for (int i = 0; (unsigned)i < input.length(); i++) {
+            if (input[i] == 'G' || input[i] == 'C') {
+                _density++;
+            } else if (input[i] != 'A' && input[i] != 'T') {
+                input.erase(i, 1);
+                i--;
+            }
         }
+        _length += input.length();
     }
-    std::cout << _density / input.length() * 100 << std::endl;
+
+    std::cout << _density / _length * 100 << std::endl;
     return 0;
 }
