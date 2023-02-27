@@ -21,9 +21,10 @@ namespace cs19
      * @param data an iterable collection of values convertible to `bool`
      * @return `true` if any element of `data` is `true`
      */
+
+
     template <typename Iterable>
-    bool any(const Iterable &data)
-    {
+    bool any(const Iterable &data) {
         for (const auto &element : data)
             if (element)
                 return true;
@@ -40,9 +41,10 @@ namespace cs19
      * @param data an iterable collection of values convertible to `bool`
      * @return `true` if all elements of `data` are `true` (or if the iterable is empty)
      */
+
+
     template <typename Iterable>
-    bool all(const Iterable &data)
-    {
+    bool all(const Iterable &data) {
         auto length = 0;
         for (const auto &element : data)
             ++length;
@@ -69,10 +71,12 @@ namespace cs19
      * @return the largest element of `data`
      */
     template <template <typename> typename Iterable, typename Element>
-    Element max(const Iterable<Element> &data)
-    {
-        auto bookkeep = data[0];
-        for (const auto &element : data)
+    Element max(const Iterable<Element> &data) {
+        Element bookkeep{};
+        bool first = true;
+        for (const auto &element : data) {
+            if (first)
+                bookkeep = element, first = false;
             if (element > bookkeep)
                 bookkeep = element;
 
@@ -92,12 +96,15 @@ namespace cs19
      * @return the smallest element of `data`
      */
     template <template <typename> typename Iterable, typename Element>
-    Element min(const Iterable<Element> &data)
-    {
-        auto bookkeep = data[0];
-        for (const auto &element : data)
+    Element min(const Iterable<Element> &data) {
+        Element bookkeep{};
+        bool first = true;
+        for (const auto &element : data) {
+            if (first)
+                bookkeep = element, first = false;
             if (element < bookkeep)
                 bookkeep = element;
+        }
 
         return bookkeep;
     }
@@ -117,8 +124,7 @@ namespace cs19
      * @return the sum of all elements in `data`
      */
     template <typename Iterable, typename SumType>
-    SumType sum(const Iterable &data, SumType start)
-    {
+    SumType sum(const Iterable &data, SumType start) {
         for (const auto &element : data)
             start += element;
 
