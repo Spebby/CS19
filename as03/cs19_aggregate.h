@@ -3,7 +3,7 @@
  *
  * Template functions offering some convenient aggregations.
  *
- * @author Someone in CS 19, someone@jeff.cis.cabrillo.edu
+ * @author Thom Mott in CS 19, tomott@jeff.cis.cabrillo.edu
  */
  
 // Header guard: ensures that the contents of this file will only be added once to an executable
@@ -11,24 +11,6 @@
 #define CS19_AGGREGATE_H_
 
 namespace cs19 {
-
-    /**
-     * Returns `true` if any element of an iterable object is `true`.
-     *
-     * @tparam Iterable an iterable type that supports iteration with a range-based loop, and
-     *         contains values convertible to `bool`.
-     *
-     * @param data an iterable collection of values convertible to `bool`
-     * @return `true` if any element of `data` is `true`
-     */
-    template <typename Iterable>
-    bool any(const Iterable &data) {
-        for (const auto &element : data)
-            if (element)
-                return true;
-
-        return false;
-    }
 
     /**
      * Returns `true` if all elements of an iterable object are `true` (or if the iterable is empty).
@@ -52,6 +34,24 @@ namespace cs19 {
                 return false;
 
         return true;
+    }
+
+    /**
+     * Returns `true` if any element of an iterable object is `true`.
+     *
+     * @tparam Iterable an iterable type that supports iteration with a range-based loop, and
+     *         contains values convertible to `bool`.
+     *
+     * @param data an iterable collection of values convertible to `bool`
+     * @return `true` if any element of `data` is `true`
+     */
+    template <typename Iterable>
+    bool any(const Iterable &data) {
+        for (const auto &element : data)
+            if (element)
+                return true;
+
+        return false;
     }
 
     /**
