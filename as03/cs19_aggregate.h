@@ -46,13 +46,13 @@ namespace cs19
         auto length = 0;
         for (const auto &element : data)
             ++length;
-        if(length == 0)
+        if (length == 0)
             return true;
 
         for (const auto &element : data)
             if (!element)
                 return false;
-        
+
         return true;
     }
 
@@ -71,11 +71,11 @@ namespace cs19
     template <template <typename> typename Iterable, typename Element>
     Element max(const Iterable<Element> &data)
     {
-        auto bookkeep = Element();
+        auto bookkeep = data[0];
         for (const auto &element : data)
             if (element > bookkeep)
                 bookkeep = element;
-        
+
         return bookkeep;
     }
 
@@ -94,7 +94,7 @@ namespace cs19
     template <template <typename> typename Iterable, typename Element>
     Element min(const Iterable<Element> &data)
     {
-        auto bookkeep = Element();
+        auto bookkeep = data[0];
         for (const auto &element : data)
             if (element < bookkeep)
                 bookkeep = element;

@@ -5,13 +5,13 @@
  *
  * @author Jeffrey Bergamini for CS 19, jeffrey.bergamini@cabrillo.edu
  */
- 
+
 #include <cassert>
 #include <string>
 #include <vector>
- 
+
 #include "cs19_aggregate.h"
- 
+
 int main() {
   assert(cs19::all(std::string("CS 19!")));
   assert(!cs19::all(std::vector<int>{2, 4, 6, 0, 1}));
