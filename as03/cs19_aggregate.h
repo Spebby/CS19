@@ -5,13 +5,13 @@
  *
  * @author Someone in CS 19, someone@jeff.cis.cabrillo.edu
  */
-
+ 
 // Header guard: ensures that the contents of this file will only be added once to an executable
 #ifndef CS19_AGGREGATE_H_
 #define CS19_AGGREGATE_H_
 
-namespace cs19
-{
+namespace cs19 {
+
     /**
      * Returns `true` if any element of an iterable object is `true`.
      *
@@ -21,8 +21,6 @@ namespace cs19
      * @param data an iterable collection of values convertible to `bool`
      * @return `true` if any element of `data` is `true`
      */
-
-
     template <typename Iterable>
     bool any(const Iterable &data) {
         for (const auto &element : data)
@@ -41,8 +39,6 @@ namespace cs19
      * @param data an iterable collection of values convertible to `bool`
      * @return `true` if all elements of `data` are `true` (or if the iterable is empty)
      */
-
-
     template <typename Iterable>
     bool all(const Iterable &data) {
         auto length = 0;
