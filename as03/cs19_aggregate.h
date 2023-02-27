@@ -5,7 +5,7 @@
  *
  * @author Thom Mott in CS 19, tomott@jeff.cis.cabrillo.edu
  */
- 
+
 // Header guard: ensures that the contents of this file will only be added once to an executable
 #ifndef CS19_AGGREGATE_H_
 #define CS19_AGGREGATE_H_
@@ -76,57 +76,57 @@ namespace cs19 {
             if (element > bookkeep)
                 bookkeep = element;
 
-        return bookkeep;
-    }
-
-    /**
-     * Returns the smallest element of an iterable object.
-     *
-     * @tparam Iterable an iterable type that supports iteration with a range-based loop, and
-     *         contains values of type `Element`
-     * @tparam Element a type that can be value-initialized and of which instances are mutually
-     *         comparable using the < operator
-     * @see https://en.cppreference.com/w/cpp/language/value_initialization
-     *
-     * @param data an iterable collection of `Element` values, assumed to be non-empty
-     * @return the smallest element of `data`
-     */
-    template <template <typename> typename Iterable, typename Element>
-    Element min(const Iterable<Element> &data) {
-        Element bookkeep{};
-        bool first = true;
-        for (const auto &element : data) {
-            if (first)
-                bookkeep = element, first = false;
-            if (element < bookkeep)
-                bookkeep = element;
+            return bookkeep;
         }
 
-        return bookkeep;
-    }
+        /**
+         * Returns the smallest element of an iterable object.
+         *
+         * @tparam Iterable an iterable type that supports iteration with a range-based loop, and
+         *         contains values of type `Element`
+         * @tparam Element a type that can be value-initialized and of which instances are mutually
+         *         comparable using the < operator
+         * @see https://en.cppreference.com/w/cpp/language/value_initialization
+         *
+         * @param data an iterable collection of `Element` values, assumed to be non-empty
+         * @return the smallest element of `data`
+         */
+        template <template <typename> typename Iterable, typename Element>
+        Element min(const Iterable<Element> &data) {
+            Element bookkeep{};
+            bool first = true;
+            for (const auto &element : data) {
+                if (first)
+                    bookkeep = element, first = false;
+                if (element < bookkeep)
+                    bookkeep = element;
+            }
 
-    /**
-     * Returns the sum of all elements in an iterable object.
-     *
-     * @tparam Iterable an iterable type that supports iteration with a range-based loop, and
-     *         contains values valid as operands to the + operator along with a value of type `SumType`
-     * @tparam SumType a type that can is copy-constructible, copy-assignable, and of which instances
-     *         are valid as operands to the + operator along with an element from an `Iterable` instance
-     * @see https://en.cppreference.com/w/cpp/named_req/CopyConstructible
-     * @see https://en.cppreference.com/w/cpp/named_req/CopyAssignable
-     *
-     * @param data an iterable collection
-     * @param start the initial value for the sum
-     * @return the sum of all elements in `data`
-     */
-    template <typename Iterable, typename SumType>
-    SumType sum(const Iterable &data, SumType start) {
-        for (const auto &element : data)
-            start += element;
+            return bookkeep;
+        }
 
-        return start;
-    }
+        /**
+         * Returns the sum of all elements in an iterable object.
+         *
+         * @tparam Iterable an iterable type that supports iteration with a range-based loop, and
+         *         contains values valid as operands to the + operator along with a value of type `SumType`
+         * @tparam SumType a type that can is copy-constructible, copy-assignable, and of which instances
+         *         are valid as operands to the + operator along with an element from an `Iterable` instance
+         * @see https://en.cppreference.com/w/cpp/named_req/CopyConstructible
+         * @see https://en.cppreference.com/w/cpp/named_req/CopyAssignable
+         *
+         * @param data an iterable collection
+         * @param start the initial value for the sum
+         * @return the sum of all elements in `data`
+         */
+        template <typename Iterable, typename SumType>
+        SumType sum(const Iterable &data, SumType start) {
+            for (const auto &element : data)
+                start += element;
 
-} // namespace cs19
+            return start;
+        }
+
+    } // namespace cs19
 
 #endif // CS19_AGGREGATE_H_
