@@ -23,12 +23,6 @@ namespace cs19 {
      */
     template <typename Iterable>
     bool all(const Iterable &data) {
-        auto length = 0;
-        for (const auto &element : data)
-            ++length;
-        if (length == 0)
-            return true;
-
         for (const auto &element : data)
             if (!element)
                 return false;
@@ -128,6 +122,6 @@ namespace cs19 {
         return start;
     }
 
-} // namespace cs19
+}  // namespace cs19
 
-#endif // CS19_AGGREGATE_H_
+#endif  // CS19_AGGREGATE_H_
