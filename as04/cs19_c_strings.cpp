@@ -4,7 +4,7 @@ namespace cs19 {
 
     unsigned atoi(const char *str) {
         int result = 0;
-        for (; *str; str++) 
+        for (; *str; str++)
             result = result * 10 + *str - '0';
 
         return result;
@@ -28,7 +28,7 @@ namespace cs19 {
 
     std::size_t strlen(const char *str) {
         int result = 0;
-        while(*str++)
+        while (*str++)
             result++;
         // `for (; *str; str++) {}` is equivalent to above
 
@@ -41,13 +41,13 @@ namespace cs19 {
                 if (*haystack == *needle)
                     return haystack;
 
-        return nullptr; // no match
+        return nullptr;  // no match
     }
 
     const char *strrchr(const char *haystack, const char needle) {
         for (int i = strlen(haystack) - 1; i >= 0; i--)
             if (haystack[i] == needle)
-                return haystack + i; // equivalent to &haystack[i]
+                return haystack + i;  // equivalent to &haystack[i]
 
         return nullptr;
     }
@@ -84,22 +84,8 @@ namespace cs19 {
             }
         }
 
-        *output = '\0'; // terminate the string
+        *output = '\0';  // terminate the string
     }
-
-    char *strcat(char *dest, const char *src) {
-        char *result = dest;
-        while (*dest)
-            dest++;
-        while (*src) {
-            *dest = *src;
-            dest++;
-            src++;
-        }
-        *dest = '\0';
-        return result;
-    }
-    // maybe will work
 
     char *str_rot13(char *str) {
         for (; *str; str++) {
@@ -116,4 +102,4 @@ namespace cs19 {
     }
     // this is gross, but i don't care!!!!
 
-}
+} // namespace cs19
