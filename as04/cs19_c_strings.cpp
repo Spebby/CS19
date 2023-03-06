@@ -1,6 +1,4 @@
 #include "cs19_c_strings.h"
-// REMOVE THIS
-#include <iostream>
 
 namespace cs19 {
 
