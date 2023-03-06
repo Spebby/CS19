@@ -64,7 +64,7 @@ namespace cs19 {
     const char *strstr(const char *haystack, const char *needle) {
         int len = strlen(needle);
         for (int i = 0; haystack[i] != '\0'; i++)
-            if (strncmp(&haystack[i], needle, len) == 0)
+            if (strcmp(&haystack[i], needle) == 0)
                 return &haystack[i];
 
         return nullptr;
