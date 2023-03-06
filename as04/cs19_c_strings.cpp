@@ -1,59 +1,62 @@
 #include "cs19_c_strings.h"
- 
+// REMOVE THIS
+#include <iostream>
+
 namespace cs19 {
 
     unsigned atoi(const char *str) {
         int result = 0;
-        for (int i = 0; str[i] != '\0'; i++) 
-            result = result * 10 + str[i] - '0';
+        for (; *str; str++) 
+            result = result * 10 + *str - '0';
 
         return result;
     }
 
     const char *strchr(const char *haystack, const char needle) {
-        for (int i = 0; haystack[i] != '\0'; i++)
-            if (haystack[i] == needle)
-                return &haystack[i];
+        for (; *haystack; haystack++)
+            if (*haystack == needle)
+                return haystack;
 
         return nullptr;
     }
 
     int strcmp(const char *str1, const char *str2) {
-        for (int i = 0; str1[i] != '\0' || str2[i] != '\0'; i++)
-            if (str1[i] != str2[i])
-                return str1[i] - str2[i];
+        for (; *str1 || *str2; str1++, str2++)
+            if (*str1 != *str2)
+                return *str1 - *str2;
 
         return 0;
     }
 
     std::size_t strlen(const char *str) {
         int result = 0;
-        for (int i = 0; str[i] != '\0'; i++)
+        while(*str++)
             result++;
+        // `for (; *str; str++) {}` is equivalent to above
 
         return result;
     }
 
     const char *strpbrk(const char *haystack, const char *char_list) {
-        for (int i = 0; haystack[i] != '\0'; i++)
-            for (int j = 0; char_list[j] != '\0'; j++)
-                if (haystack[i] == char_list[j])
-                    return &haystack[i];
+        for (; *haystack; haystack++)
+            for (const char *needle = char_list; *needle; needle++)
+                if (*haystack == *needle)
+                    return haystack;
 
-        return nullptr;
+        return nullptr; // no match
     }
 
     const char *strrchr(const char *haystack, const char needle) {
         for (int i = strlen(haystack) - 1; i >= 0; i--)
             if (haystack[i] == needle)
-                return &haystack[i];
+                return haystack + i; // equivalent to &haystack[i]
 
         return nullptr;
     }
 
     char *strrev(char *str) {
         int len = strlen(str);
-        for (int i = 0; i < len / 2; i++) {
+        for (int i = 0; i < len * .5f; i++) {
             char temp = str[i];
             str[i] = str[len - i - 1];
             str[len - i - 1] = temp;
@@ -62,37 +65,57 @@ namespace cs19 {
     }
 
     const char *strstr(const char *haystack, const char *needle) {
-        int len = strlen(needle);
-        for (int i = 0; haystack[i] != '\0'; i++)
-            if (strcmp(&haystack[i], needle) == 0)
-                return &haystack[i];
+        for (; *haystack; haystack++)
+            if (strcmp(haystack, needle) == 0)
+                return haystack;
 
         return nullptr;
     }
 
     void strzip(const char *str1, const char *str2, char *output) {
-        int i = 0;
-        for (int j = 0; str1[j] != '\0' || str2[j] != '\0'; j++) {
-            if (str1[j] != '\0')
-                output[i++] = str1[j];
-            if (str2[j] != '\0')
-                output[i++] = str2[j];
+        while (*str1 || *str2) {
+            if (*str1) {
+                *output = *str1;
+                output++;
+                str1++;
+            }
+            if (*str2) {
+                *output = *str2;
+                output++;
+                str2++;
+            }
         }
-        output[i] = '\0';
+
+        *output = '\0'; // terminate the string
     }
 
+    char *strcat(char *dest, const char *src) {
+        char *result = dest;
+        while (*dest)
+            dest++;
+        while (*src) {
+            *dest = *src;
+            dest++;
+            src++;
+        }
+        *dest = '\0';
+        return result;
+    }
+    // maybe will work
+
     char *str_rot13(char *str) {
-        for (int i = 0; str[i] != '\0'; i++) {
-            if (str[i] >= 'A' && str[i] <= 'M')
-                str[i] += 13;
-            else if (str[i] >= 'N' && str[i] <= 'Z')
-                str[i] -= 13;
-            else if (str[i] >= 'a' && str[i] <= 'm')
-                str[i] += 13;
-            else if (str[i] >= 'n' && str[i] <= 'z')
-                str[i] -= 13;
+        for (; *str; str++) {
+            if (*str >= 'A' && *str <= 'M')
+                *str += 13;
+            else if (*str >= 'N' && *str <= 'Z')
+                *str -= 13;
+            else if (*str >= 'a' && *str <= 'm')
+                *str += 13;
+            else if (*str >= 'n' && *str <= 'z')
+                *str -= 13;
         }
         return str;
     }
+    // this is gross, but i don't care!!!!
 
 }

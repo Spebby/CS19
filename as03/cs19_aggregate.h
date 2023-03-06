@@ -10,6 +10,9 @@
 #ifndef CS19_AGGREGATE_H_
 #define CS19_AGGREGATE_H_
 
+// this is a ok example of static linking.
+// this is entierly unrelated to static linking but it helped me understand it :)
+
 namespace cs19 {
 
     /**

@@ -23,5 +23,4 @@ int main() {
     }
 
     printf("%f\n", (_gcDensity / (_gcDensity + _atDensity + .000000001) * 100));
-    return 0;
 }
