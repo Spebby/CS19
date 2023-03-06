@@ -1,3 +1,11 @@
+/**
+ * @file GC_Analyser.cpp
+ * 
+ * Reads in a DNA sequence and outputs the GC content.
+ * 
+ * @author Thom Mott for CS 19, tomott@jeff.cis.cabrillo.edu
+ */
+
 #include <iostream>
 #include <string>
 

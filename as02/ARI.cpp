@@ -1,3 +1,11 @@
+/**
+ * @file ARI.cpp
+ * 
+ * Supposed to calculate the ARI of a text file.
+ * 
+ * @author Thom Mott for CS 19, tomott@jeff.cis.cabrillo.edu
+ */
+
 #include <iostream>  // std::c(in|out)
 #include <sstream>   // std::istringstream
 #include <string>    // std::getline
