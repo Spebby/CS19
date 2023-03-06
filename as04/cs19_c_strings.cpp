@@ -64,8 +64,15 @@ namespace cs19 {
 
     const char *strstr(const char *haystack, const char *needle) {
         for (; *haystack; haystack++)
-            if (strcmp(haystack, needle) == 0)
-                return haystack;
+            if (*haystack == *needle) {
+                const char *haystack_copy = haystack;
+                const char *needle_copy = needle;
+                for (; *haystack_copy && *needle_copy; haystack_copy++, needle_copy++)
+                    if (*haystack_copy != *needle_copy)
+                        break;
+                if (!*needle_copy)
+                    return haystack;
+            }
 
         return nullptr;
     }
@@ -102,4 +109,4 @@ namespace cs19 {
     }
     // this is gross, but i don't care!!!!
 
-} // namespace cs19
+}  // namespace cs19
