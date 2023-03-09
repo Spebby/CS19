@@ -63,6 +63,9 @@ namespace cs19 {
     }
 
     const char *strstr(const char *haystack, const char *needle) {
+        if(!*needle) 
+            return haystack;  // empty string is always a substring (even of empty string
+
         for (; *haystack; haystack++)
             if (*haystack == *needle) {
                 const char *haystack_copy = haystack;
