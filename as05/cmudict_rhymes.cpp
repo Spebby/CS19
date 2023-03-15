@@ -1,28 +1,5 @@
 /**
  * @file cmudict_rhymes.cpp
- *
- * @brief A program that reads a CMU Pronouncing Dictionary file and prints all words that rhyme
- *       with a given word.
- *
- * @author Thom Mott for CS 19, tomott@jeff.cis.cabrillo.edu
- */
-
-#include <fstream>
-#include <iostream>
-#include <string>
-#include <unordered_map>
-#include <set>
-
-
-int main() {
-    // read in the dictionary
-    std::unordered_map<std::string> CMUdict;
-    cs19::read_dictionary(std::cin, CMUdict);
-
-    
-}
-
-/**
  * @brief Reads a CMU Pronouncing Dictionary file and fills a set with the words.
  *
  * @param in The input stream to read from.
@@ -35,25 +12,46 @@ int main() {
  * USE A SET AT THE END. Automatically removes double words and is alphabetical. Saves time + faster to read.
  * 
  * @param dict The set to fill with words.
+ * @author Thom Mott for CS 19, tomott@jeff.cis.cabrillo.edu
  */
+
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <unordered_map>
+#include <set>
 
 namespace cs19 {
 
-    // take in data and fill a set
-    void read_dictionary(std::istream& in, std::unordered_map<std::string>& dict) {
-        int entry;
-        {
-            std::ifstream dataset("/srv/datasets/cmudict/cmudict.dict");
-            int index;
-            std::string ARPA;
-            while (dataset >> index && dataset.seekg(1, std::ios_base::cur) &&
-            std::getline(dataset, ARPA)) {
-                dict[index] = ARPA;
-            }
+    void read_dictionary(std::istream& in, std::unordered_map<std::string, std::string>& dict) {
+        std::ifstream dataset("/srv/datasets/cmudict/cmudict.dict");
+        std::string phoneme;
+        std::string word;
+        // file line contents: Word\ARPAPronunciation
+        while (dataset >> word && dataset.seekg(1, std::ios_base::cur) &&
+            std::getline(dataset, phoneme)) {
+            dict[phoneme] = word;
         }
     }
 
-    void print_rhymes(const std::string& word) {
-        
+    void print_dictionary(const std::unordered_map<std::string, std::string>& dict) {
+        for (auto& entry : dict)
+            std::cout << entry.first << " " << entry.second << std::endl;
     }
-}  // namespace cs19 
+
+    void print_rhymes(const std::string& word) {
+        std::cout << "hi" << std::endl;
+    }
+
+    int main(int argc, char **argv) {
+        // read in the dictionary
+        std::unordered_map<std::string, std::string> CMUdict;
+        cs19::read_dictionary(std::cin, CMUdict);
+        // DEBUG: print the dictionary
+        cs19::print_dictionary(CMUdict);
+        cs19::print_rhymes(argv[1]);
+
+        return 0;
+    }
+    // wow apparently main doesn't exist!!!
+}  // namespace cs19
