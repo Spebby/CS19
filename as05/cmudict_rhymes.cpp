@@ -46,9 +46,10 @@ void print_dictionary(const std::unordered_map<std::string, std::string>& dict) 
     std::cout << "Done" << std::endl;
 }
 
-void print_rhymes(const std::string& word) {
-    std::cout << "Rhymes for " << word << std::endl;
-    std::set<std::string> rhymes;
+void print_rhymes(const std::set<std::string>& nunci, const std::unordered_map<std::string, std::string>& dict) {
+
+    // find the last stressed vowel
+
 }
 
 int main(int argc, char **argv) {
@@ -63,9 +64,18 @@ int main(int argc, char **argv) {
     read_dictionary(std::cin, CMUdict);
     // DEBUG: print the dictionary
     print_dictionary(CMUdict);
-    std::string query = argv[1];
-    std::cout << "Query: " << query << std::endl;
-    print_rhymes(query);
+    // find the rhymes, then print them.
+    std::cout << "Query: " << argv[1] << std::endl;
+    std::set<std::string> phonemes;
+    for (auto& entry : CMUdict) {
+        if (entry.second == argv[1])
+            phonemes.insert(entry.first);
+    }
+    if (phonemes.empty()) {
+        std::cerr << "Word not found in dictionary." << std::endl;
+        return 1;
+    }
+    print_rhymes(phonemes, CMUdict);
 
     return 0;
 }
