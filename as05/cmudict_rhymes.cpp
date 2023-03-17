@@ -23,6 +23,9 @@
 #include <unordered_map>
 #include <set>
 
+// currently does not read in properly!
+// When a word with the same pronunciation is found, it is not added to the map. 
+// ex. Rhyme and Rime.
 void read_dictionary(std::istream& in, std::unordered_map<std::string, std::string>& dict) {
     std::ifstream dataset("/srv/datasets/cmudict/cmudict.dict");
     std::string phoneme;
@@ -31,8 +34,8 @@ void read_dictionary(std::istream& in, std::unordered_map<std::string, std::stri
     while (dataset >> word && dataset.seekg(1, std::ios_base::cur) &&
         std::getline(dataset, phoneme)) {
         // if the the 3rd to last character of a word is a (, remove the end of the string
-        if (word[word.length() - 3] == '(')
-            word = word.substr(0, word.length() - 3); 
+        if (word.back() == ')')
+            word = word.substr(0, word.length() - 3);
 
         dict[phoneme] = word;
     }
@@ -43,13 +46,25 @@ void print_dictionary(const std::unordered_map<std::string, std::string>& dict) 
         std::cout << entry.first << " " << entry.second << std::endl;
     
     std::cout << "Size: " << dict.size() << std::endl;
-    std::cout << "Done" << std::endl;
+}
+
+void print_to_file (const std::unordered_map<std::string, std::string>& dict) {
+    std::ofstream outfile("rhymes.txt");
+    for (auto& entry : dict)
+        outfile << entry.first << " " << entry.second << std::endl;
 }
 
 void print_rhymes(const std::set<std::string>& nunci, const std::unordered_map<std::string, std::string>& dict) {
-
     // find the last stressed vowel
-
+    std::set<std::string> phonemes;
+    for (auto& entry : nunci) {
+        for (int i = entry.length() - 1; i >= 0; i--) {
+            if (entry[i] == '1') {
+                phonemes.insert(entry.substr(i));
+                std::cout << "Phoneme: " << entry.substr(i) << std::endl;
+            }
+        }
+    }
 }
 
 int main(int argc, char **argv) {
@@ -63,19 +78,27 @@ int main(int argc, char **argv) {
     std::unordered_map<std::string, std::string> CMUdict;
     read_dictionary(std::cin, CMUdict);
     // DEBUG: print the dictionary
-    print_dictionary(CMUdict);
+    // print_dictionary(CMUdict);
     // find the rhymes, then print them.
-    std::cout << "Query: " << argv[1] << std::endl;
-    std::set<std::string> phonemes;
-    for (auto& entry : CMUdict) {
-        if (entry.second == argv[1])
-            phonemes.insert(entry.first);
+    std::string query = (std::string)argv[1];
+    // make argv lowercase
+    for (int i = 0; i < query.length(); i++)
+        query[i] = tolower(query[i]);
+    std::cout << "Query: " << query << std::endl;
+    std::set<std::string> nunciations;
+    // not every word gets copied into cmudict, investigate. The below logic is sound.
+    for (std::pair<const std::string, std::string>& entry : CMUdict) {
+        if (entry.second == query) {
+            nunciations.insert(entry.first);
+            std::cout << "Nunciation: " << entry.first << std::endl;
+        }
     }
-    if (phonemes.empty()) {
+    if (nunciations.empty()) {
         std::cerr << "Word not found in dictionary." << std::endl;
         return 1;
     }
-    print_rhymes(phonemes, CMUdict);
+    // print_to_file(CMUdict);
+    print_rhymes(nunciations, CMUdict);
 
     return 0;
 }
