@@ -27,14 +27,14 @@
 // currently does not read in properly!
 // When a word with the same pronunciation is found, it is not added to the map. 
 // ex. Rhyme and Rime.
-void read_dictionary(std::istream& in, std::unordered_map<std::string, std::unordered_set<std::string>>& dict) {
+void read_dictionary(std::istream& in,
+std::unordered_map<std::string, std::unordered_set<std::string>>& dict) {
     std::ifstream dataset("/srv/datasets/cmudict/cmudict.dict");
     std::string phoneme;
     std::string word;
     // file line contents: Word\ARPAPronunciation
     while (dataset >> word && dataset.seekg(1, std::ios_base::cur) &&
         std::getline(dataset, phoneme)) {
-        // if the the 3rd to last character of a word is a (, remove the end of the string
         if (word.back() == ')')
             word = word.substr(0, word.length() - 3);
         // if the pronunciation is already in the map, add the word to the set
@@ -42,7 +42,8 @@ void read_dictionary(std::istream& in, std::unordered_map<std::string, std::unor
     }
 }
 
-void print_dictionary(const std::unordered_map<std::string, std::unordered_set<std::string>>& dict, bool fast = false) {
+void print_dictionary(const std::unordered_map<std::string,
+std::unordered_set<std::string>>& dict, bool fast = false) {
     std::ofstream outfile("outputTest.txt");
     if(fast) {
         for (auto& entry : dict) {
@@ -69,14 +70,15 @@ void print_dictionary(const std::unordered_map<std::string, std::unordered_set<s
     std::cout << "Size: " << dict.size() << std::endl;
 }
 
-void print_rhymes(const std::set<std::string>& nunci, const std::unordered_map<std::string, std::unordered_set<std::string>>& dict) {
+void print_rhymes(const std::set<std::string>& nunci, const std::unordered_map<std::string,
+std::unordered_set<std::string>>& dict) {
     // find the last stressed vowel
     std::set<std::string> phonemes;
     for (auto& entry : nunci) {
         for (int i = entry.length() - 1; i >= 0; i--) {
             if (entry[i] == '1') {
-                phonemes.insert(entry.substr(i));
-                std::cout << "Phoneme: " << entry.substr(i) << std::endl;
+                phonemes.insert(entry.substr(i - 2));
+                std::cout << "Phoneme: " << entry.substr(i - 2) << std::endl;
             }
         }
     }
@@ -90,9 +92,10 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    std::unordered_map<std::string, std::unordered_set<std::string>> CMUdict;
+    std::unordered_map<std::string,
+    std::unordered_set<std::string>> CMUdict;
     read_dictionary(std::cin, CMUdict);
-    print_dictionary(CMUdict, true);  // DEBUG: print the dictionary
+    // print_dictionary(CMUdict, true);  // DEBUG: print the dictionary
     // find the rhymes, then print them.
     std::string query = (std::string)argv[1];
     // make argv lowercase
@@ -101,7 +104,8 @@ int main(int argc, char **argv) {
     std::cout << "Query: " << query << std::endl;
     std::set<std::string> nunciations;
     // not every word gets copied into cmudict, investigate. The below logic is sound.
-    for (std::pair<const std::string, std::unordered_set<std::string>>& entry : CMUdict) {
+    for (std::pair<const std::string,
+    std::unordered_set<std::string>>& entry : CMUdict) {
         for (auto& word : entry.second)
             if (word == query) {
                 nunciations.insert(entry.first);
