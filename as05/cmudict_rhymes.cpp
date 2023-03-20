@@ -71,7 +71,7 @@ std::unordered_set<std::string>>& dict, bool fast = false) {
 }
 
 void print_rhymes(const std::set<std::string>& NUCI, std::unordered_map<std::string,
-    std::unordered_set<std::string>>& DICT) {
+    std::unordered_set<std::string>>& DICT, const std::string& query) {
     // search the dict for words that end with the same phoneme
     std::set<std::string> rhymes;
     for (std::pair<const std::string,
@@ -85,9 +85,7 @@ void print_rhymes(const std::set<std::string>& NUCI, std::unordered_map<std::str
         }
     }
     
-    // remove the query word from the set
-    for (auto& nunc : NUCI)
-        rhymes.erase(nunc);
+    rhymes.erase(query);
 
     // print out the set
     for (auto& word : rhymes)
@@ -95,12 +93,15 @@ void print_rhymes(const std::set<std::string>& NUCI, std::unordered_map<std::str
 }
 
 int main(int argc, char **argv) {
-    // read in the dictionary
     // check that we recieved a string from the command line
-    if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " <word>" << std::endl;
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " <word> <arg>" << std::endl;
         return 1;
     }
+
+    bool all = false;
+    if (argc == 3 && std::string(argv[2]) == "-a")
+        all = true;
 
     std::unordered_map<std::string,
     std::unordered_set<std::string>> CMUdict;
@@ -121,7 +122,7 @@ int main(int argc, char **argv) {
                 for (int i = pho.length() - 1; i >= 0; i--) {
                     if (pho[i] == '1' || pho[i] == '2') {
                         nunciations.insert(pho.substr(i - 2));
-                        std::cout << "Phoneme: " << pho.substr(i - 2) << std::endl;
+                        // std::cout << "Phoneme: " << pho.substr(i - 2) << std::endl;
                         break;
                     }
                 }
@@ -132,7 +133,7 @@ int main(int argc, char **argv) {
         std::cerr << "Word not found in dictionary." << std::endl;
         return 1;
     }
-    print_rhymes(nunciations, CMUdict);
+    print_rhymes(nunciations, CMUdict, query);
 
     return 0;
 }
