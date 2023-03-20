@@ -24,9 +24,6 @@
 #include <set>
 #include <unordered_set>
 
-// currently does not read in properly!
-// When a word with the same pronunciation is found, it is not added to the map. 
-// ex. Rhyme and Rime.
 void read_dictionary(std::istream& in,
 std::unordered_map<std::string, std::unordered_set<std::string>>& dict) {
     std::ifstream dataset("/srv/datasets/cmudict/cmudict.dict");
@@ -43,28 +40,15 @@ std::unordered_map<std::string, std::unordered_set<std::string>>& dict) {
 }
 
 void print_dictionary(const std::unordered_map<std::string,
-std::unordered_set<std::string>>& dict, bool fast = false) {
+std::unordered_set<std::string>>& dict) {
     std::ofstream outfile("outputTest.txt");
-    if(fast) {
-        for (auto& entry : dict) {
-            std::string entries;
-            for (auto& word : entry.second)
-                entries += word + " ";
-            // remove the last space
-            entries = entries.substr(0, entries.length() - 1);
-            outfile << entry.first << " " << entries << std::endl;
-        }
-    } else { 
-        for (auto& entry : dict) {
-            std::string entries;
-            for (auto& word : entry.second)
-                entries += word + " ";
-            // remove the last space
-            entries = entries.substr(0, entries.length() - 1);
-
-            std::cout << entry.first << " " << entries << std::endl;
-            outfile << entry.first << " " << entries << std::endl;
-        }
+    for (auto& entry : dict) {
+        std::string entries;
+        for (auto& word : entry.second)
+            entries += word + " ";
+        // remove the last space
+        entries = entries.substr(0, entries.length() - 1);
+        outfile << entry.first << " " << entries << std::endl;
     }
 
     std::cout << "Size: " << dict.size() << std::endl;
@@ -84,10 +68,8 @@ void print_rhymes(const std::set<std::string>& NUCI, std::unordered_map<std::str
             }
         }
     }
-    
-    rhymes.erase(query);
 
-    // print out the set
+    rhymes.erase(query);
     for (auto& word : rhymes)
         std::cout << word << std::endl;
 }
@@ -106,11 +88,11 @@ int main(int argc, char **argv) {
     std::unordered_map<std::string,
     std::unordered_set<std::string>> CMUdict;
     read_dictionary(std::cin, CMUdict);
-    // print_dictionary(CMUdict, true);  // DEBUG: print the dictionary
+    // print_dictionary(CMUdict);  // DEBUG: print the dictionary
 
     std::string query = (std::string)argv[1];
-    for (int i = 0; i < query.length(); i++)  // make query lowercase
-        query[i] = tolower(query[i]);
+    for (char &c : query)
+        c = tolower(c);
 
     // std::cout << "Query: " << query << std::endl;
     std::set<std::string> nunciations;
