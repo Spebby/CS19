@@ -70,18 +70,28 @@ std::unordered_set<std::string>>& dict, bool fast = false) {
     std::cout << "Size: " << dict.size() << std::endl;
 }
 
-void print_rhymes(const std::set<std::string>& nunci, const std::unordered_map<std::string,
-std::unordered_set<std::string>>& dict) {
-    // find the last stressed vowel
-    std::set<std::string> phonemes;
-    for (auto& entry : nunci) {
-        for (int i = entry.length() - 1; i >= 0; i--) {
-            if (entry[i] == '1') {
-                phonemes.insert(entry.substr(i - 2));
-                std::cout << "Phoneme: " << entry.substr(i - 2) << std::endl;
+void print_rhymes(const std::set<std::string>& NUCI, std::unordered_map<std::string,
+    std::unordered_set<std::string>>& DICT) {
+    // search the dict for words that end with the same phoneme
+    std::set<std::string> rhymes;
+    for (std::pair<const std::string,
+    std::unordered_set<std::string>>& entry : DICT) {
+        for (auto& nunc : NUCI) {
+            const std::string& phoneme = entry.first;
+            if (phoneme.length() >= nunc.length() &&
+                phoneme.substr(phoneme.length() - nunc.length()) == nunc) {
+                    rhymes.insert(entry.second.begin(), entry.second.end());
             }
         }
     }
+    
+    // remove the query word from the set
+    for (auto& nunc : NUCI)
+        rhymes.erase(nunc);
+
+    // print out the set
+    for (auto& word : rhymes)
+        std::cout << word << std::endl;
 }
 
 int main(int argc, char **argv) {
@@ -96,20 +106,26 @@ int main(int argc, char **argv) {
     std::unordered_set<std::string>> CMUdict;
     read_dictionary(std::cin, CMUdict);
     // print_dictionary(CMUdict, true);  // DEBUG: print the dictionary
-    // find the rhymes, then print them.
+
     std::string query = (std::string)argv[1];
-    // make argv lowercase
-    for (int i = 0; i < query.length(); i++)
+    for (int i = 0; i < query.length(); i++)  // make query lowercase
         query[i] = tolower(query[i]);
-    std::cout << "Query: " << query << std::endl;
+
+    // std::cout << "Query: " << query << std::endl;
     std::set<std::string> nunciations;
-    // not every word gets copied into cmudict, investigate. The below logic is sound.
     for (std::pair<const std::string,
     std::unordered_set<std::string>>& entry : CMUdict) {
-        for (auto& word : entry.second)
-            if (word == query) {
-                nunciations.insert(entry.first);
-                std::cout << "Nunciation: " << entry.first << std::endl;
+        for (auto& word : entry.second) {
+            if (word == query) {  // word is found: find the last stressed phoneme
+                auto pho = entry.first;
+                for (int i = pho.length() - 1; i >= 0; i--) {
+                    if (pho[i] == '1' || pho[i] == '2') {
+                        nunciations.insert(pho.substr(i - 2));
+                        std::cout << "Phoneme: " << pho.substr(i - 2) << std::endl;
+                        break;
+                    }
+                }
+            }
         }
     }
     if (nunciations.empty()) {
