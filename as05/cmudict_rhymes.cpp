@@ -5,24 +5,26 @@
  * @author Thom Mott for CS 19, tomott@jeff.cis.cabrillo.edu
  */
 
+#include <algorithm>
+#include <cctype>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <unordered_map>
 #include <set>
 #include <unordered_set>
+#include <iterator>
 
 void read_dictionary(std::istream& in,
 std::unordered_map<std::string, std::unordered_set<std::string>>& dict) {
     std::ifstream dataset("/srv/datasets/cmudict/cmudict.dict");
-    std::string phoneme, word;
-    // file line contents: Word\ARPAPronunciation
-    while (dataset >> word && dataset.seekg(1, std::ios_base::cur) &&
-        std::getline(dataset, phoneme)) {
+    std::istream_iterator<std::string> word_it(dataset), eof;
+    while (word_it != eof) {
+        std::string word = *word_it++;
         if (word.back() == ')')
-            word = word.substr(0, word.length() - 3);
-        // if the pronunciation is already in the map, add the word to the set
-        dict[phoneme].insert(word);
+            word.resize(word.length() - 3);
+        std::string phoneme = *word_it++;
+        dict.emplace(std::move(phoneme), std::unordered_set<std::string>{std::move(word)});
     }
 }
 
@@ -40,14 +42,13 @@ std::unordered_set<std::string>>& dict) {
     std::cout << "Size: " << dict.size() << std::endl;
 }*/
 
-void print_rhymes(const std::set<std::string>& NUCI, std::unordered_map<std::string,
+void print_rhymes(const std::set<std::string>& NUCI, const std::unordered_map<std::string,
     std::unordered_set<std::string>>& DICT, const std::string& query,
-    const int syllables, const bool all) {
+    const short syllables, const bool all) {
     // search the dict for words that end with the same phoneme
     std::set<std::string> rhymes;
-    for (std::pair<const std::string,
-    std::unordered_set<std::string>>& entry : DICT) {
-        for (auto& nunc : NUCI) {
+    for (const auto& entry : DICT) {
+        for (const auto& nunc : NUCI) {
             const std::string& phoneme = entry.first;
             if (!all) {
                 int temp_syll = 0;
@@ -65,13 +66,14 @@ void print_rhymes(const std::set<std::string>& NUCI, std::unordered_map<std::str
     }
 
     rhymes.erase(query);
-    for (auto& word : rhymes)
-        std::cout << word << std::endl;
+    for (const auto& word : rhymes)
+        std::cout << word << "\n";
 }
 
 int main(int argc, char **argv) {
     if (argc < 2)  // check that we recieved a string from the command line
         return 1;
+
     bool all = false;
     if (argc == 3 && std::string(argv[2]) == "-a")
         all = true;
@@ -81,30 +83,26 @@ int main(int argc, char **argv) {
     read_dictionary(std::cin, CMUdict);
     // print_dictionary(CMUdict);  // DEBUG: print the dictionary
 
-    std::string query = (std::string)argv[1];
-    int syllables = 0;
-    for (char &c : query) {
-        c = tolower(c);
-        // remove non alphabetic characters, apostropgies or hyphens
-        if (!isalpha(c) && c != '\'' && c != '-')
-            query.erase(query.find(c), 1);
-    }
+    short syllables = 0;
+    std::string query(argv[1]);
+    std::transform(query.begin(), query.end(), query.begin(), [](unsigned char c) 
+    { return std::tolower(c); });
+    query.erase(std::remove_if(query.begin(), query.end(), [](unsigned char c) {
+        return !std::isalpha(c) && c != '\'' && c != '-';
+    }), query.end());
 
     // std::cout << "Query: " << query << std::endl;
     std::set<std::string> nunciations;
-    for (std::pair<const std::string,
-    std::unordered_set<std::string>>& entry : CMUdict) {
-        for (auto& word : entry.second) {
-            if (word == query) {  // word is found: find the last stressed phoneme
+    for (const auto& entry : CMUdict) {
+        for (const auto& word : entry.second) {
+            if (word == query) {  // word is found
                 auto pho = entry.first;
-                // find out the number of syllables
                 // integer suffixed phonemes designate end of a syllable.
                 if (!all) {
                     syllables = 0;
                     for (char& c : pho)
                         if (c == '0' || c == '1' || c == '2')
                             syllables++;
-                            // std::cout << "Syllables: " << syllables << std::endl;
                 }
 
                 for (std::size_t i = pho.length() - 1; i >= 0; i--) {
