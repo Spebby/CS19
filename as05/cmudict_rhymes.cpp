@@ -1,19 +1,7 @@
 /**
  * @file cmudict_rhymes.cpp
  * @brief Reads a CMU Pronouncing Dictionary file and fills a set with the words.
- *
- * @param in The input stream to read from.
- * Read in the dictionary file and fill a map with ARPA as key/index and word as value.
- * ex. "AE2 B D IH0 K EY1 SH AH0 N", "Abdication"
- * When exaiming, we'd go from the last stressed (EY1) to the end. "ation"
- * For the purposes of finding the last phoneme, ignore x0's.
  * 
- * If query word has two possible pronunciations, use both (do seperate analysis on both)
- * and then combine results.
- * USE A SET AT THE END. Automatically removes double words and is alphabetical.
- * Saves time + faster to read.
- * 
- * @param dict The set to fill with words.
  * @author Thom Mott for CS 19, tomott@jeff.cis.cabrillo.edu
  */
 
@@ -53,7 +41,8 @@ std::unordered_set<std::string>>& dict) {
 }*/
 
 void print_rhymes(const std::set<std::string>& NUCI, std::unordered_map<std::string,
-    std::unordered_set<std::string>>& DICT, const std::string& query, const int syllables, const bool all) {
+    std::unordered_set<std::string>>& DICT, const std::string& query,
+    const int syllables, const bool all) {
     // search the dict for words that end with the same phoneme
     std::set<std::string> rhymes;
     for (std::pair<const std::string,
