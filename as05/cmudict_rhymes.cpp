@@ -34,10 +34,6 @@ void print_rhymes(const std::set<std::string>& NUCI, const std::unordered_map<st
     const int16_t& syllables, const bool& all) {
     // search the dict for words that end with the same phoneme
     std::set<std::string> rhymes;
-    // print nuci 
-    for (const auto& nunc : NUCI)
-        std::cout << nunc << std::endl;
-
 
     for (const auto& entry : DICT) {
         const std::string& phoneme = entry.first;
@@ -74,6 +70,7 @@ int main(int argc, char **argv) {
 
     std::unordered_map<std::string,
     std::unordered_set<std::string>> CMUdict;
+    std::unordered_map<std::string, int16_t> SyllDict;
     int16_t syllables = 0;
     std::string query(argv[1]);
     std::transform(query.begin(), query.end(), query.begin(), ::tolower);
