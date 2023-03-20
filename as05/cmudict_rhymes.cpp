@@ -24,15 +24,10 @@
 #include <set>
 #include <unordered_set>
 
-bool all = false;
-int syllables = 0;
-std::string query;
-
 void read_dictionary(std::istream& in,
 std::unordered_map<std::string, std::unordered_set<std::string>>& dict) {
     std::ifstream dataset("/srv/datasets/cmudict/cmudict.dict");
-    std::string phoneme;
-    std::string word;
+    std::string phoneme, word;
     // file line contents: Word\ARPAPronunciation
     while (dataset >> word && dataset.seekg(1, std::ios_base::cur) &&
         std::getline(dataset, phoneme)) {
@@ -43,7 +38,7 @@ std::unordered_map<std::string, std::unordered_set<std::string>>& dict) {
     }
 }
 
-void print_dictionary(const std::unordered_map<std::string,
+/*void print_dictionary(const std::unordered_map<std::string,
 std::unordered_set<std::string>>& dict) {
     std::ofstream outfile("outputTest.txt");
     for (auto& entry : dict) {
@@ -54,12 +49,11 @@ std::unordered_set<std::string>>& dict) {
         entries = entries.substr(0, entries.length() - 1);
         outfile << entry.first << " " << entries << std::endl;
     }
-
     std::cout << "Size: " << dict.size() << std::endl;
-}
+}*/
 
 void print_rhymes(const std::set<std::string>& NUCI, std::unordered_map<std::string,
-    std::unordered_set<std::string>>& DICT) {
+    std::unordered_set<std::string>>& DICT, const std::string& query, const int syllables, const bool all) {
     // search the dict for words that end with the same phoneme
     std::set<std::string> rhymes;
     for (std::pair<const std::string,
@@ -87,12 +81,9 @@ void print_rhymes(const std::set<std::string>& NUCI, std::unordered_map<std::str
 }
 
 int main(int argc, char **argv) {
-    // check that we recieved a string from the command line
-    if (argc < 2) {
-        std::cerr << "Usage: " << argv[0] << " <word> <arg>" << std::endl;
+    if (argc < 2)  // check that we recieved a string from the command line
         return 1;
-    }
-
+    bool all = false;
     if (argc == 3 && std::string(argv[2]) == "-a")
         all = true;
 
@@ -101,9 +92,14 @@ int main(int argc, char **argv) {
     read_dictionary(std::cin, CMUdict);
     // print_dictionary(CMUdict);  // DEBUG: print the dictionary
 
-    query = (std::string)argv[1];
-    for (char &c : query)
+    std::string query = (std::string)argv[1];
+    int syllables = 0;
+    for (char &c : query) {
         c = tolower(c);
+        // remove non alphabetic characters, apostropgies or hyphens
+        if (!isalpha(c) && c != '\'' && c != '-')
+            query.erase(query.find(c), 1);
+    }
 
     // std::cout << "Query: " << query << std::endl;
     std::set<std::string> nunciations;
@@ -136,7 +132,5 @@ int main(int argc, char **argv) {
         // std::cerr << "Word not found in dictionary." << std::endl;
         return 1;
     }
-    print_rhymes(nunciations, CMUdict);
-
-    return 0;
+    print_rhymes(nunciations, CMUdict, query, syllables, all);
 }
