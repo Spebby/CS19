@@ -18,17 +18,18 @@
 void read_dictionary(std::istream& in,
 std::unordered_map<std::string, std::unordered_set<std::string>>& dict) {
     std::ifstream dataset("/srv/datasets/cmudict/cmudict.dict");
-    std::istream_iterator<std::string> word_it(dataset), eof;
-    while (word_it != eof) {
-        std::string word = *word_it++;
+    std::string phoneme, word;
+    // file line contents: Word\ARPAPronunciation
+    while (dataset >> word && dataset.seekg(1, std::ios_base::cur) &&
+        std::getline(dataset, phoneme)) {
         if (word.back() == ')')
-            word.resize(word.length() - 3);
-        std::string phoneme = *word_it++;
-        dict.emplace(std::move(phoneme), std::unordered_set<std::string>{std::move(word)});
+            word = word.substr(0, word.length() - 3);
+        // if the pronunciation is already in the map, add the word to the set
+        dict[phoneme].insert(word);
     }
 }
 
-/*void print_dictionary(const std::unordered_map<std::string,
+void print_dictionary(const std::unordered_map<std::string,
 std::unordered_set<std::string>>& dict) {
     std::ofstream outfile("outputTest.txt");
     for (auto& entry : dict) {
@@ -40,7 +41,7 @@ std::unordered_set<std::string>>& dict) {
         outfile << entry.first << " " << entries << std::endl;
     }
     std::cout << "Size: " << dict.size() << std::endl;
-}*/
+}
 
 void print_rhymes(const std::set<std::string>& NUCI, const std::unordered_map<std::string,
     std::unordered_set<std::string>>& DICT, const std::string& query,
@@ -83,6 +84,7 @@ int main(int argc, char **argv) {
     read_dictionary(std::cin, CMUdict);
     // print_dictionary(CMUdict);  // DEBUG: print the dictionary
 
+    
     short syllables = 0;
     std::string query(argv[1]);
     std::transform(query.begin(), query.end(), query.begin(), [](unsigned char c) 
