@@ -24,6 +24,10 @@
 #include <set>
 #include <unordered_set>
 
+bool all = false;
+int syllables = 0;
+std::string query;
+
 void read_dictionary(std::istream& in,
 std::unordered_map<std::string, std::unordered_set<std::string>>& dict) {
     std::ifstream dataset("/srv/datasets/cmudict/cmudict.dict");
@@ -55,13 +59,21 @@ std::unordered_set<std::string>>& dict) {
 }
 
 void print_rhymes(const std::set<std::string>& NUCI, std::unordered_map<std::string,
-    std::unordered_set<std::string>>& DICT, const std::string& query) {
+    std::unordered_set<std::string>>& DICT) {
     // search the dict for words that end with the same phoneme
     std::set<std::string> rhymes;
     for (std::pair<const std::string,
     std::unordered_set<std::string>>& entry : DICT) {
         for (auto& nunc : NUCI) {
             const std::string& phoneme = entry.first;
+            if (!all) {
+                int temp_syll = 0;
+                for (auto& c : phoneme)
+                    if (c == '0' || c == '1' || c == '2')
+                        temp_syll++;
+                if (temp_syll != syllables)
+                    continue;
+            }
             if (phoneme.length() >= nunc.length() &&
                 phoneme.substr(phoneme.length() - nunc.length()) == nunc) {
                     rhymes.insert(entry.second.begin(), entry.second.end());
@@ -81,7 +93,6 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    bool all = false;
     if (argc == 3 && std::string(argv[2]) == "-a")
         all = true;
 
@@ -90,7 +101,7 @@ int main(int argc, char **argv) {
     read_dictionary(std::cin, CMUdict);
     // print_dictionary(CMUdict);  // DEBUG: print the dictionary
 
-    std::string query = (std::string)argv[1];
+    query = (std::string)argv[1];
     for (char &c : query)
         c = tolower(c);
 
@@ -101,7 +112,17 @@ int main(int argc, char **argv) {
         for (auto& word : entry.second) {
             if (word == query) {  // word is found: find the last stressed phoneme
                 auto pho = entry.first;
-                for (int i = pho.length() - 1; i >= 0; i--) {
+                // find out the number of syllables
+                // integer suffixed phonemes designate end of a syllable.
+                if (!all) {
+                    syllables = 0;
+                    for (char& c : pho)
+                        if (c == '0' || c == '1' || c == '2')
+                            syllables++;
+                            // std::cout << "Syllables: " << syllables << std::endl;
+                }
+
+                for (std::size_t i = pho.length() - 1; i >= 0; i--) {
                     if (pho[i] == '1' || pho[i] == '2') {
                         nunciations.insert(pho.substr(i - 2));
                         // std::cout << "Phoneme: " << pho.substr(i - 2) << std::endl;
@@ -112,10 +133,10 @@ int main(int argc, char **argv) {
         }
     }
     if (nunciations.empty()) {
-        std::cerr << "Word not found in dictionary." << std::endl;
+        // std::cerr << "Word not found in dictionary." << std::endl;
         return 1;
     }
-    print_rhymes(nunciations, CMUdict, query);
+    print_rhymes(nunciations, CMUdict);
 
     return 0;
 }
