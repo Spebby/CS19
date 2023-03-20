@@ -31,13 +31,19 @@ std::unordered_set<std::string>>& dict) {
 
 void print_rhymes(const std::set<std::string>& NUCI, const std::unordered_map<std::string,
     std::unordered_set<std::string>>& DICT, const std::string& query,
-    const int16_t syllables, const bool all) {
+    const int16_t& syllables, const bool& all) {
     // search the dict for words that end with the same phoneme
     std::set<std::string> rhymes;
+    // print nuci 
+    for (const auto& nunc : NUCI)
+        std::cout << nunc << std::endl;
+
 
     for (const auto& entry : DICT) {
+        const std::string& phoneme = entry.first;
+        const auto pLength = phoneme.length();
         for (const auto& nunc : NUCI) {
-            const std::string& phoneme = entry.first;
+            const auto nLength = nunc.length();
             if (!all) {
                 int temp_syll = 0;
                 for (auto& c : phoneme)
@@ -46,8 +52,8 @@ void print_rhymes(const std::set<std::string>& NUCI, const std::unordered_map<st
                 if (temp_syll != syllables)
                     continue;
             }
-            if (phoneme.length() >= nunc.length() &&
-                phoneme.substr(phoneme.length() - nunc.length()) == nunc) {
+            if (pLength >= nLength &&
+                phoneme.substr(pLength - nLength) == nunc) {
                     rhymes.insert(entry.second.begin(), entry.second.end());
             }
         }
