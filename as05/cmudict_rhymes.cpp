@@ -31,7 +31,7 @@ std::unordered_set<std::string>>& dict) {
 
 void print_rhymes(const std::set<std::string>& NUCI, const std::unordered_map<std::string,
     std::unordered_set<std::string>>& DICT, const std::string& query,
-    const short syllables, const bool all) {
+    const int16_t syllables, const bool all) {
     // search the dict for words that end with the same phoneme
     std::set<std::string> rhymes;
 
@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
 
     std::unordered_map<std::string,
     std::unordered_set<std::string>> CMUdict;
-    short syllables = 0;
+    int16_t syllables = 0;
     std::string query(argv[1]);
     std::transform(query.begin(), query.end(), query.begin(), ::tolower);
     // don't need anything to remove "illegal characters" since command line args removes "'s
