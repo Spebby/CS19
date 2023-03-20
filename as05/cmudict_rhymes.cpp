@@ -15,21 +15,7 @@
 #include <unordered_set>
 #include <iterator>
 
-void read_dictionary(std::istream& in,
-std::unordered_map<std::string, std::unordered_set<std::string>>& dict) {
-    std::ifstream dataset("/srv/datasets/cmudict/cmudict.dict");
-    std::string phoneme, word;
-    // file line contents: Word\ARPAPronunciation
-    while (dataset >> word && dataset.seekg(1, std::ios_base::cur) &&
-        std::getline(dataset, phoneme)) {
-        if (word.back() == ')')
-            word = word.substr(0, word.length() - 3);
-        // if the pronunciation is already in the map, add the word to the set
-        dict[phoneme].insert(word);
-    }
-}
-
-void print_dictionary(const std::unordered_map<std::string,
+/*void print_dictionary(const std::unordered_map<std::string,
 std::unordered_set<std::string>>& dict) {
     std::ofstream outfile("outputTest.txt");
     for (auto& entry : dict) {
@@ -41,13 +27,14 @@ std::unordered_set<std::string>>& dict) {
         outfile << entry.first << " " << entries << std::endl;
     }
     std::cout << "Size: " << dict.size() << std::endl;
-}
+}*/
 
 void print_rhymes(const std::set<std::string>& NUCI, const std::unordered_map<std::string,
     std::unordered_set<std::string>>& DICT, const std::string& query,
     const short syllables, const bool all) {
     // search the dict for words that end with the same phoneme
     std::set<std::string> rhymes;
+
     for (const auto& entry : DICT) {
         for (const auto& nunc : NUCI) {
             const std::string& phoneme = entry.first;
@@ -81,42 +68,38 @@ int main(int argc, char **argv) {
 
     std::unordered_map<std::string,
     std::unordered_set<std::string>> CMUdict;
-    read_dictionary(std::cin, CMUdict);
-    // print_dictionary(CMUdict);  // DEBUG: print the dictionary
-
-    
     short syllables = 0;
     std::string query(argv[1]);
-    std::transform(query.begin(), query.end(), query.begin(), [](unsigned char c) 
-    { return std::tolower(c); });
-    query.erase(std::remove_if(query.begin(), query.end(), [](unsigned char c) {
-        return !std::isalpha(c) && c != '\'' && c != '-';
-    }), query.end());
-
+    std::transform(query.begin(), query.end(), query.begin(), ::tolower);
+    // don't need anything to remove "illegal characters" since command line args removes "'s
     // std::cout << "Query: " << query << std::endl;
     std::set<std::string> nunciations;
-    for (const auto& entry : CMUdict) {
-        for (const auto& word : entry.second) {
-            if (word == query) {  // word is found
-                auto pho = entry.first;
-                // integer suffixed phonemes designate end of a syllable.
-                if (!all) {
-                    syllables = 0;
-                    for (char& c : pho)
-                        if (c == '0' || c == '1' || c == '2')
-                            syllables++;
-                }
+    // micro optimisation would be to make this a vector and reserve.
+    std::ifstream dataset("/srv/datasets/cmudict/cmudict.dict");
+    std::string phoneme, word;
+    // file line contents: Word\ARPAPronunciation
+    while (dataset >> word && dataset.seekg(1, std::ios_base::cur) &&
+        std::getline(dataset, phoneme)) {
+        if (word.back() == ')')
+            word = word.substr(0, word.length() - 3);
 
-                for (std::size_t i = pho.length() - 1; i >= 0; i--) {
-                    if (pho[i] == '1' || pho[i] == '2') {
-                        nunciations.insert(pho.substr(i - 2));
-                        // std::cout << "Phoneme: " << pho.substr(i - 2) << std::endl;
-                        break;
-                    }
-                }
+        if (word == query) {  // word is found
+            // integer suffixed phonemes designate end of a syllable.
+            if (!all) {
+                syllables = 0;
+                for (char& c : phoneme)
+                    if (c == '0' || c == '1' || c == '2')
+                        syllables++;
             }
+
+            nunciations.insert(phoneme.substr(phoneme.find_last_of("12") - 2));
+            // std::cout << "Phoneme: " << phoneme.substr(phoneme.find_last_of("12") - 2) << std::endl;
         }
+        // if the pronunciation is already in the map, add the word to the set
+        CMUdict[phoneme].insert(word);
     }
+    // print_dictionary(CMUdict);  // DEBUG: print the dictionary
+
     if (nunciations.empty()) {
         // std::cerr << "Word not found in dictionary." << std::endl;
         return 1;
