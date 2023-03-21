@@ -30,8 +30,8 @@ std::unordered_set<std::string>>& dict) {
 }*/
 
 void print_rhymes(const std::set<std::string>& NUCI, const std::unordered_map<std::string,
-    std::unordered_set<std::string>>& DICT, const std::unordered_map<std::string, int16_t>& sylls, const std::string& query,
-    const int16_t& syllables, const bool& all) {
+    std::unordered_set<std::string>>& DICT, const std::unordered_map<std::string, int16_t>&
+    sylls, const std::string& query, const int16_t& syllables, const bool& all) {
     // search the dict for words that end with the same phoneme
     std::set<std::string> rhymes;
 
@@ -40,7 +40,7 @@ void print_rhymes(const std::set<std::string>& NUCI, const std::unordered_map<st
         const auto pLength = phoneme.length();
         for (const auto& nunc : NUCI) {
             const auto nLength = nunc.length();
-            if(pLength < nLength)
+            if (pLength < nLength)
                 continue;
             if (!all && sylls.at(phoneme) != syllables)
                 continue;
@@ -93,7 +93,6 @@ int main(int argc, char **argv) {
         if (word == query) {  // word is found
             syllables = temptSyll;
             nunciations.insert(phoneme.substr(phoneme.find_last_of("12") - 2));
-            // std::cout << "Phoneme: " << phoneme.substr(phoneme.find_last_of("12") - 2) << std::endl;
         }
         // if the pronunciation is already in the map, add the word to the set
         SyllDict[phoneme] = temptSyll;
