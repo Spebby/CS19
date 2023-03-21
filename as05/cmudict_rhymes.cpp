@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
 
     std::unordered_map<std::string,
     std::unordered_set<std::string>> CMUdict;
-    std::unordered_map<std::string, int16_t> SyllDict;
+    // std::unordered_map<std::string, int16_t> SyllDict;
     int16_t syllables = 0;
     std::string query(argv[1]);
     std::transform(query.begin(), query.end(), query.begin(), ::tolower);
