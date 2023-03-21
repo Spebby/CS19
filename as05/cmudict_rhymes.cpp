@@ -40,6 +40,9 @@ void print_rhymes(const std::set<std::string>& NUCI, const std::unordered_map<st
         const auto pLength = phoneme.length();
         for (const auto& nunc : NUCI) {
             const auto nLength = nunc.length();
+            if(pLength < nLength)
+                continue;
+
             if (!all) {
                 int temp_syll = 0;
                 for (auto& c : phoneme)
@@ -48,8 +51,7 @@ void print_rhymes(const std::set<std::string>& NUCI, const std::unordered_map<st
                 if (temp_syll != syllables)
                     continue;
             }
-            if (pLength >= nLength &&
-                phoneme.substr(pLength - nLength) == nunc) {
+            if (phoneme.substr(pLength - nLength) == nunc) {
                     rhymes.insert(entry.second.begin(), entry.second.end());
             }
         }
