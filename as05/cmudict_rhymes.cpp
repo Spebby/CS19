@@ -30,7 +30,7 @@ std::unordered_set<std::string>>& dict) {
 }*/
 
 void print_rhymes(const std::set<std::string>& NUCI, const std::unordered_map<std::string,
-    std::unordered_set<std::string>>& DICT, const std::string& query,
+    std::unordered_set<std::string>>& DICT, const std::unordered_map<std::string, int16_t>& sylls, const std::string& query,
     const int16_t& syllables, const bool& all) {
     // search the dict for words that end with the same phoneme
     std::set<std::string> rhymes;
@@ -42,15 +42,9 @@ void print_rhymes(const std::set<std::string>& NUCI, const std::unordered_map<st
             const auto nLength = nunc.length();
             if(pLength < nLength)
                 continue;
+            if (!all && sylls.at(phoneme) != syllables)
+                continue;
 
-            if (!all) {
-                int temp_syll = 0;
-                for (auto& c : phoneme)
-                    if (c == '0' || c == '1' || c == '2')
-                        temp_syll++;
-                if (temp_syll != syllables)
-                    continue;
-            }
             if (phoneme.substr(pLength - nLength) == nunc) {
                     rhymes.insert(entry.second.begin(), entry.second.end());
             }
@@ -72,7 +66,7 @@ int main(int argc, char **argv) {
 
     std::unordered_map<std::string,
     std::unordered_set<std::string>> CMUdict;
-    // std::unordered_map<std::string, int16_t> SyllDict;
+    std::unordered_map<std::string, int16_t> SyllDict;
     int16_t syllables = 0;
     std::string query(argv[1]);
     std::transform(query.begin(), query.end(), query.begin(), ::tolower);
@@ -88,19 +82,21 @@ int main(int argc, char **argv) {
         if (word.back() == ')')
             word = word.substr(0, word.length() - 3);
 
-        if (word == query) {  // word is found
-            // integer suffixed phonemes designate end of a syllable.
-            if (!all) {
-                syllables = 0;
+        // integer suffixed phonemes designate end of a syllable.
+        int16_t temptSyll = 0;
+        if (!all) {
                 for (char& c : phoneme)
                     if (c == '0' || c == '1' || c == '2')
-                        syllables++;
-            }
+                        temptSyll++;
+        }
 
+        if (word == query) {  // word is found
+            syllables = temptSyll;
             nunciations.insert(phoneme.substr(phoneme.find_last_of("12") - 2));
             // std::cout << "Phoneme: " << phoneme.substr(phoneme.find_last_of("12") - 2) << std::endl;
         }
         // if the pronunciation is already in the map, add the word to the set
+        SyllDict[phoneme] = temptSyll;
         CMUdict[phoneme].insert(word);
     }
     // print_dictionary(CMUdict);  // DEBUG: print the dictionary
@@ -109,5 +105,5 @@ int main(int argc, char **argv) {
         // std::cerr << "Word not found in dictionary." << std::endl;
         return 1;
     }
-    print_rhymes(nunciations, CMUdict, query, syllables, all);
+    print_rhymes(nunciations, CMUdict, SyllDict, query, syllables, all);
 }
