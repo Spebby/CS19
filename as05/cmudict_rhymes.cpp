@@ -6,7 +6,6 @@
  */
 
 #include <algorithm>
-#include <cctype>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -15,43 +14,43 @@
 #include <unordered_set>
 #include <iterator>
 
-/*void print_dictionary(const std::unordered_map<std::string,
-std::unordered_set<std::string>>& dict) {
+void print_dictionary(const std::unordered_map<std::string,
+std::unordered_set<std::pair<std::string, int16_t>>>& dict) {
     std::ofstream outfile("outputTest.txt");
-    for (auto& entry : dict) {
-        std::string entries;
-        for (auto& word : entry.second)
-            entries += word + " ";
-        // remove the last space
-        entries = entries.substr(0, entries.length() - 1);
-        outfile << entry.first << " " << entries << std::endl;
+    for (const auto& entry : dict) {
+        outfile << entry.first << " ";
+        for (const auto& word : entry.second)
+            outfile << word.first << " ";
+        outfile << std::endl;
     }
     std::cout << "Size: " << dict.size() << std::endl;
-}*/
+}
 
-void print_rhymes(const std::set<std::string>& NUCI, const std::unordered_map<std::string,
-    std::unordered_set<std::string>>& DICT, const std::unordered_map<std::string, int16_t>&
-    sylls, const std::string& query, const int16_t& syllables, const bool& all) {
+void print_rhymes(const std::set<std::pair<std::string, int>>& NUCI, const
+    std::unordered_map<std::string, std::unordered_set<std::pair<std::string,
+    int>>>& DICT, const bool& all) {
     // search the dict for words that end with the same phoneme
     std::set<std::string> rhymes;
-
-    for (const auto& entry : DICT) {
-        const std::string& phoneme = entry.first;
-        const auto pLength = phoneme.length();
-        for (const auto& nunc : NUCI) {
-            const auto nLength = nunc.length();
-            if (pLength < nLength)
-                continue;
-            if (!all && sylls.at(phoneme) != syllables)
-                continue;
-
-            if (phoneme.substr(pLength - nLength) == nunc) {
-                    rhymes.insert(entry.second.begin(), entry.second.end());
+    // since the dict should now have the same phoneme for each word, we can just
+    // search for the phoneme in the query word.
+    for (const auto& entry: NUCI) {
+        auto it = DICT.find(entry.first)->second;
+        // insert some code here to get the set from the dict
+        if (!all) {
+            std::set<std::string> tempRhymes;
+            for (const auto& word : it) {
+                if (word.second == entry.second)
+                    tempRhymes.insert(word.first);
             }
+            rhymes.insert(tempRhymes.begin(), tempRhymes.end());
+        } else {
+            for (const auto& word : it)
+                rhymes.insert(word.first);
         }
+        // then check each pair in the set to see if the syll count isn't too long if not all
+        // then insert the word into the rhymes set
     }
 
-    rhymes.erase(query);
     for (const auto& word : rhymes)
         std::cout << word << "\n";
 }
@@ -64,45 +63,42 @@ int main(int argc, char **argv) {
     if (argc == 3 && std::string(argv[2]) == "-a")
         all = true;
 
-    std::unordered_map<std::string,
-    std::unordered_set<std::string>> CMUdict;
-    std::unordered_map<std::string, int16_t> SyllDict;
-    int16_t syllables = 0;
+    // FUN FACT: YOU CAN MAKE SETS OF PAIRS!!!!
+    std::unordered_map<std::string, std::unordered_set<std::pair<std::string, int>>> CMUdict;
     std::string query(argv[1]);
     std::transform(query.begin(), query.end(), query.begin(), ::tolower);
     // don't need anything to remove "illegal characters" since command line args removes "'s
-    // std::cout << "Query: " << query << std::endl;
-    std::set<std::string> nunciations;
+    std::set<std::pair<std::string, int>> nunciations;
     // micro optimisation would be to make this a vector and reserve.
     std::ifstream dataset("/srv/datasets/cmudict/cmudict.dict");
     std::string phoneme, word;
     // file line contents: Word\ARPAPronunciation
+
+    // instead of full phonemes, you could instead only care about the "rhyme pattern"
     while (dataset >> word && dataset.seekg(1, std::ios_base::cur) &&
         std::getline(dataset, phoneme)) {
         if (word.back() == ')')
             word = word.substr(0, word.length() - 3);
 
         // integer suffixed phonemes designate end of a syllable.
-        int16_t temptSyll = 0;
+        int temptSyll = 0;
         if (!all) {
                 for (char& c : phoneme)
                     if (c == '0' || c == '1' || c == '2')
                         temptSyll++;
         }
+        std::string tempPhoneme = phoneme.substr(phoneme.find_last_of("12") - 2);
 
-        if (word == query) {  // word is found
-            syllables = temptSyll;
-            nunciations.insert(phoneme.substr(phoneme.find_last_of("12") - 2));
+        if (word == query) {
+            nunciations.insert(std::make_pair(tempPhoneme, temptSyll));
+            continue;
         }
-        // if the pronunciation is already in the map, add the word to the set
-        SyllDict[phoneme] = temptSyll;
-        CMUdict[phoneme].insert(word);
+        
+        CMUdict[tempPhoneme].insert(std::make_pair(word, temptSyll));
     }
     // print_dictionary(CMUdict);  // DEBUG: print the dictionary
-
-    if (nunciations.empty()) {
-        // std::cerr << "Word not found in dictionary." << std::endl;
+    if (nunciations.empty())
         return 1;
-    }
-    print_rhymes(nunciations, CMUdict, SyllDict, query, syllables, all);
+
+    print_rhymes(nunciations, CMUdict, all);
 }
