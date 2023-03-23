@@ -11,24 +11,23 @@
 #include <string>
 #include <unordered_map>
 #include <set>
-#include <unordered_set>
 #include <iterator>
 
-void print_dictionary(const std::unordered_map<std::string,
-std::unordered_set<std::pair<std::string, int16_t>>>& dict) {
+/*void print_dictionary(const std::unordered_map<std::string,
+std::set<std::pair<std::string, int16_t>>>& dict) {
     std::ofstream outfile("outputTest.txt");
     for (const auto& entry : dict) {
         outfile << entry.first << " ";
         for (const auto& word : entry.second)
-            outfile << word.first << " ";
+            outfile << word.first << ", " << word.second << " ";
         outfile << std::endl;
     }
     std::cout << "Size: " << dict.size() << std::endl;
-}
+}*/
 
-void print_rhymes(const std::set<std::pair<std::string, int>>& NUCI, const
-    std::unordered_map<std::string, std::unordered_set<std::pair<std::string,
-    int>>>& DICT, const bool& all) {
+void print_rhymes(const std::set<std::pair<std::string, int16_t>>& NUCI, const
+    std::unordered_map<std::string, std::set<std::pair<std::string,
+    int16_t>>>& DICT, const bool& all) {
     // search the dict for words that end with the same phoneme
     std::set<std::string> rhymes;
     // since the dict should now have the same phoneme for each word, we can just
@@ -56,38 +55,47 @@ void print_rhymes(const std::set<std::pair<std::string, int>>& NUCI, const
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2)  // check that we recieved a string from the command line
-        return 1;
+    std::string query;
+    if (argc < 2) { // check that we recieved a string from the command line
+        query = "jeff";
+    } else 
+        query = argv[1];
 
     bool all = false;
     if (argc == 3 && std::string(argv[2]) == "-a")
         all = true;
 
     // FUN FACT: YOU CAN MAKE SETS OF PAIRS!!!!
-    std::unordered_map<std::string, std::unordered_set<std::pair<std::string, int>>> CMUdict;
-    std::string query(argv[1]);
+    std::unordered_map<std::string, std::set<std::pair<std::string, int16_t>>> CMUdict;
     std::transform(query.begin(), query.end(), query.begin(), ::tolower);
     // don't need anything to remove "illegal characters" since command line args removes "'s
-    std::set<std::pair<std::string, int>> nunciations;
+    std::set<std::pair<std::string, int16_t>> nunciations;
     // micro optimisation would be to make this a vector and reserve.
     std::ifstream dataset("/srv/datasets/cmudict/cmudict.dict");
-    std::string phoneme, word;
+    std::string fingerprint, word;
     // file line contents: Word\ARPAPronunciation
 
     // instead of full phonemes, you could instead only care about the "rhyme pattern"
     while (dataset >> word && dataset.seekg(1, std::ios_base::cur) &&
-        std::getline(dataset, phoneme)) {
+        std::getline(dataset, fingerprint)) {
         if (word.back() == ')')
             word = word.substr(0, word.length() - 3);
 
         // integer suffixed phonemes designate end of a syllable.
-        int temptSyll = 0;
+        int16_t temptSyll = 0;
         if (!all) {
-                for (char& c : phoneme)
+                for (char& c : fingerprint)
                     if (c == '0' || c == '1' || c == '2')
                         temptSyll++;
         }
-        std::string tempPhoneme = phoneme.substr(phoneme.find_last_of("12") - 2);
+        std::string tempPhoneme;
+        // if the fingerprint has a 1 or 2 in it, then use find the substring
+        // from the last 1 or 2 to the end of the string
+        if (fingerprint.find('1') != std::string::npos 
+        || fingerprint.find('2') != std::string::npos) {
+            tempPhoneme = fingerprint.substr(fingerprint.find_last_of("12") - 2);
+        } else
+            tempPhoneme = fingerprint;
 
         if (word == query) {
             nunciations.insert(std::make_pair(tempPhoneme, temptSyll));
