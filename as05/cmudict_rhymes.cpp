@@ -32,7 +32,7 @@ void print_rhymes(const std::set<std::pair<std::string, int16_t>>& NUCI, const
     std::set<std::string> rhymes;
     // since the dict should now have the same phoneme for each word, we can just
     // search for the phoneme in the query word.
-    for (const auto& entry: NUCI) {
+    for (const auto& entry : NUCI) {
         auto it = DICT.find(entry.first)->second;
         // insert some code here to get the set from the dict
         if (!all) {
@@ -87,19 +87,18 @@ int main(int argc, char **argv) {
                         temptSyll++;
         }
         std::string tempPhoneme;
-        // if the fingerprint has a 1 or 2 in it, then use find the substring
-        // from the last 1 or 2 to the end of the string
-        if (fingerprint.find('1') != std::string::npos 
+        if (fingerprint.find('1') != std::string::npos
         || fingerprint.find('2') != std::string::npos) {
             tempPhoneme = fingerprint.substr(fingerprint.find_last_of("12") - 2);
-        } else
+        } else {
             tempPhoneme = fingerprint;
+        }
 
         if (word == query) {
             nunciations.insert(std::make_pair(tempPhoneme, temptSyll));
             continue;
         }
-        
+
         CMUdict[tempPhoneme].insert(std::make_pair(word, temptSyll));
     }
     // print_dictionary(CMUdict);  // DEBUG: print the dictionary
