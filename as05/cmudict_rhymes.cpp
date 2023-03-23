@@ -55,11 +55,8 @@ void print_rhymes(const std::set<std::pair<std::string, int16_t>>& NUCI, const
 }
 
 int main(int argc, char **argv) {
-    std::string query;
-    if (argc < 2) { // check that we recieved a string from the command line
-        query = "jeff";
-    } else 
-        query = argv[1];
+    if (argc < 2)  // check that we recieved a string from the command line
+        return 1;
 
     bool all = false;
     if (argc == 3 && std::string(argv[2]) == "-a")
@@ -67,6 +64,7 @@ int main(int argc, char **argv) {
 
     // FUN FACT: YOU CAN MAKE SETS OF PAIRS!!!!
     std::unordered_map<std::string, std::set<std::pair<std::string, int16_t>>> CMUdict;
+    std::string query(argv[1]);
     std::transform(query.begin(), query.end(), query.begin(), ::tolower);
     // don't need anything to remove "illegal characters" since command line args removes "'s
     std::set<std::pair<std::string, int16_t>> nunciations;
