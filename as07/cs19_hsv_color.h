@@ -8,9 +8,11 @@
 
 #include <string>
 
-namespace cs19 {
     class HsvColor {
         public:
+        /** Constructs a new HsvColor with all components set to 0. */
+        HsvColor();
+        
         /**
          * Constructs a new HsvColor with the given HSV components
          * @param hue the hue component of the color
@@ -20,9 +22,7 @@ namespace cs19 {
          */
         HsvColor(float hue, float saturation, float value);
 
-        /**
-         * @return the complementary color, with the hue shifted 180 degrees.
-         */
+        /** @return the complementary color, with the hue shifted 180 degrees. */
         HsvColor operator~() const;
         /**
          * @param that the color to the right of the operator; the comparison.
@@ -30,9 +30,7 @@ namespace cs19 {
          */
         HsvColor operator|(const HsvColor &that) const;
 
-        /**
-         * @return the greyscale (desaturated) version of this color.
-         */
+        /** @return the greyscale (desaturated) version of this color. */
         HsvColor grayscale() const;
 
         /**
@@ -51,14 +49,18 @@ namespace cs19 {
          */
         std::string to_rgb_string() const;
 
-        // may or may not actually exist?
+        /** @return The hue component of the color */
         float hue() const;
+        /** @return The saturation component of the color */
         float saturation() const;
+        /** @return The value component of the color */
         float value() const;
+        /** @return The red component of the color */
         int red() const;
+        /** @return The green component of the color */
         int green() const;
+        /** @return The blue component of the color */
         int blue() const;
     };
-}  // namespace cs19
 
 #endif  // CS19_HSV_COLOR_H_
