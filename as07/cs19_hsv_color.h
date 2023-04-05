@@ -8,6 +8,7 @@
 
 #include <string>
 
+namespace cs19 {
     class HsvColor {
         public:
         /** Constructs a new HsvColor with all components set to 0. */
@@ -61,6 +62,14 @@
         int green() const;
         /** @return The blue component of the color */
         int blue() const;
-    };
 
+        private:
+        float _hue;  // [0, 360]
+        float _saturation;  // [0, 1]
+        float _value;  // [0, 1]
+        unsigned int _red;  // [0, 255]
+        unsigned int _green;  // [0, 255]
+        unsigned int _blue;  // [0, 255]
+    };
+}  // namespace cs19
 #endif  // CS19_HSV_COLOR_H_

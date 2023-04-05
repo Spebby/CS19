@@ -4,6 +4,7 @@
 
 #include <string>
 #include <sstream>
+#include <iostream>
 #include "cs19_hsv_color.h"
 
 namespace cs19 {
@@ -27,9 +28,8 @@ namespace cs19 {
     }
 
     HsvColor HsvColor::operator~() const {
-        return HsvColor(_hue + 180, _saturation, _value);
+        return HsvColor((int)(_hue + 180) % 360, _saturation, _value);
     }
-
     HsvColor HsvColor::operator|(const HsvColor &that) const {
         float hue = (_hue + that.hue()) / 2;
         float saturation = (_saturation + that.saturation()) / 2;
@@ -37,19 +37,17 @@ namespace cs19 {
         return HsvColor(hue, saturation, value);
     }
 
-    HsvColor HsvColor::grayscale() const {
-        return HsvColor(_hue, 0, _value);
-    }
+    HsvColor HsvColor::grayscale() const { return HsvColor(_hue, 0, _value); }
 
     std::string HsvColor::to_hex_string() const {
-        // convert RGB to hex
-        char rHex[3], gHex[3], bHex[3];
-        sprintf(rHex, "%X", _red); //convert number to hex
-        sprintf(gHex, "%X", _green);
-        sprintf(bHex, "%X", _blue);
-        std::string hexString = "#" + std::string(rHex)
-            + std::string(gHex) + std::string(bHex);
-        return hexString;
+        // can't just do "std::blah hex << stuff" because the object 
+        // has to be created first, thus the need for a new line.
+        std::stringstream hex;
+        hex << std::hex << _red;
+        hex << std::hex << _green;
+        hex << std::hex << _blue;
+        // because stringstream is a stream like cout, I can just insert more into it. 
+        return "#" + hex.str();
     }
 
     std::string HsvColor::to_rgb_string() const {
@@ -61,15 +59,7 @@ namespace cs19 {
     float HsvColor::hue() const { return _hue; }
     float HsvColor::saturation() const { return _saturation; }
     float HsvColor::value() const { return _value; }
-    
     int HsvColor::red() const { return _red; }
     int HsvColor::green() const { return _green; }
     int HsvColor::blue() const { return _blue; }
-
-    float _hue;  // [0, 360]
-    float _saturation;  // [0, 1]
-    float _value;  // [0, 1]
-    float _red;  // [0, 255]
-    float _green;  // [0, 255]
-    float _blue;  // [0, 255]
 }  // namespace cs19
