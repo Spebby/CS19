@@ -9,9 +9,7 @@
 
 namespace cs19 {
     HsvColor::HsvColor() {
-        _hue = 0;
-        _saturation = 0;
-        _value = 0;
+        _hue, _saturation, _value, _red, _green, _blue = 0;
     }
 
     HsvColor::HsvColor(float hue, float saturation, float value) {
@@ -21,14 +19,41 @@ namespace cs19 {
             throw std::domain_error("Saturation is not in domain [0, 1]");
         if (value < 0 || value > 1)
             throw std::domain_error("Value is not in domain [0, 1]");
-        
+
         _hue = hue;
         _saturation = saturation;
         _value = value;
+
+        // convert from HSV to RGB
+        auto max = value;
+        auto chroma = saturation * max;
+        auto min = max - chroma;
+        auto huePrime = hue / 60;
+        float rgb[3] = {0, 0, 0};  // this may FUCK everything up. check
+        if (-1 <= huePrime < 1) {
+            if (huePrime - 0 < 0)
+                float rgb[3] = {max, min, min - (huePrime * chroma)};
+            else if (huePrime - 0 >= 0)
+                float rgb[3] = {max, min + (huePrime * chroma), min};
+        } else if (1 <= huePrime < 3) {
+            if (huePrime - 2 < 0)
+                float rgb[3] = {min + (huePrime - 2) * chroma, max, min};
+            else if (huePrime - 2 >= 0)
+                float rgb[3] = {min, max, min - (huePrime - 2) * chroma};
+        } else if (3 <= huePrime < 5) {
+            if (huePrime - 4 < 0)
+                float rgb[3] = {min, min + (huePrime - 4) * chroma, max};
+            else if (huePrime - 4 >= 0)
+                float rgb[3] = {min - (huePrime - 4) * chroma, min, max};
+        }
+        
+        _red = rgb[0] * 255;
+        _green = rgb[1] * 255;
+        _blue = rgb[2] * 255;
     }
 
     HsvColor HsvColor::operator~() const {
-        return HsvColor((int)(_hue + 180) % 360, _saturation, _value);
+        return HsvColor(static_cast<int>(_hue + 180) % 360, _saturation, _value);
     }
     HsvColor HsvColor::operator|(const HsvColor &that) const {
         float hue = (_hue + that.hue()) / 2;
@@ -40,13 +65,13 @@ namespace cs19 {
     HsvColor HsvColor::grayscale() const { return HsvColor(_hue, 0, _value); }
 
     std::string HsvColor::to_hex_string() const {
-        // can't just do "std::blah hex << stuff" because the object 
+        // can't just do "std::blah hex << stuff" because the object
         // has to be created first, thus the need for a new line.
         std::stringstream hex;
         hex << std::hex << _red;
         hex << std::hex << _green;
         hex << std::hex << _blue;
-        // because stringstream is a stream like cout, I can just insert more into it. 
+        // because stringstream is a stream like cout, I can just insert more into it.
         return "#" + hex.str();
     }
 
