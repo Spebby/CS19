@@ -46,7 +46,7 @@ namespace cs19 {
             else if (huePrime - 4 >= 0)
                 float rgb[3] = {min - (huePrime - 4) * chroma, min, max};
         }
-        
+
         _red = rgb[0] * 255;
         _green = rgb[1] * 255;
         _blue = rgb[2] * 255;
