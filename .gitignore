@@ -2,3 +2,6 @@ as03/aggregate_test_demo.cpp
 as04/cs19_c_strings.h
 as04/cs19_c_strings_test.cpp
 .vscode/
+as07/tester.cpp
+as07/makefile
+as07/HSVTest.cpp
