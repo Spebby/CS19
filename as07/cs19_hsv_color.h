@@ -35,6 +35,13 @@ namespace cs19 {
         HsvColor grayscale() const;
 
         /**
+         * @return Returns string representation of the color in the format
+         * "hsv(60, 1, 1)"
+         * @see https://www.w3schools.com/cssref/css_colors_legal.php
+         */
+        std::string to_string() const;
+
+        /**
          * @return Returns a CSS-compatible color string in 24-bit RGB hexadecimal format, e.g.
          * "#000000" for black and "#6495ed" for cornflower blue.
          *

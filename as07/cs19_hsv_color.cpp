@@ -6,6 +6,7 @@
 #include <sstream>
 #include <iostream>
 #include "cs19_hsv_color.h"
+#include <bits/stdc++.h>
 
 namespace cs19 {
     HsvColor::HsvColor() {
@@ -24,32 +25,28 @@ namespace cs19 {
         _saturation = saturation;
         _value = value;
 
-        // convert from HSV to RGB
-        auto max = value;
-        auto chroma = saturation * max;
-        auto min = max - chroma;
-        auto huePrime = hue / 60;
-        float rgb[3] = {0, 0, 0};  // this may FUCK everything up. check
-        if (-1 <= huePrime < 1) {
-            if (huePrime - 0 < 0)
-                float rgb[3] = {max, min, min - (huePrime * chroma)};
-            else if (huePrime - 0 >= 0)
-                float rgb[3] = {max, min + (huePrime * chroma), min};
-        } else if (1 <= huePrime < 3) {
-            if (huePrime - 2 < 0)
-                float rgb[3] = {min + (huePrime - 2) * chroma, max, min};
-            else if (huePrime - 2 >= 0)
-                float rgb[3] = {min, max, min - (huePrime - 2) * chroma};
-        } else if (3 <= huePrime < 5) {
-            if (huePrime - 4 < 0)
-                float rgb[3] = {min, min + (huePrime - 4) * chroma, max};
-            else if (huePrime - 4 >= 0)
-                float rgb[3] = {min - (huePrime - 4) * chroma, min, max};
+        float chroma = saturation * value;
+        float X = chroma * (1 - abs(fmod(hue/60.0, 2) - 1));
+        float RGB[3];
+    
+        if (0 <= hue < 60) {
+            float RGB[3] = {chroma, X, 0};
+        } else if (60 <= hue < 120) {
+            float RGB[3] = {X, chroma, 0};
+        } else if (120 <= hue < 180) {
+            float RGB[3] = {0, chroma, X};
+        } else if (180 <= hue < 240) {
+            float RGB[3] = {0, X, chroma};
+        } else if (240 <= hue < 300) {
+            float RGB[3] = {X, 0, chroma};
+        } else {
+            float RGB[3] = {chroma, 0, X};
         }
 
-        _red = rgb[0] * 255;
-        _green = rgb[1] * 255;
-        _blue = rgb[2] * 255;
+        float diff = value - chroma;
+        _red = (RGB[0] + diff) * 255;
+        _green = (RGB[1] + diff) * 255;
+        _blue = (RGB[2] + diff) * 255;
     }
 
     HsvColor HsvColor::operator~() const {
@@ -64,13 +61,24 @@ namespace cs19 {
 
     HsvColor HsvColor::grayscale() const { return HsvColor(_hue, 0, _value); }
 
+    std::string HsvColor::to_string() const {
+        int hue = static_cast<int>(_hue);
+        int saturation = static_cast<int>(_saturation * 100);
+        int value = static_cast<int>(_value * 100);
+        return "hsv(" + std::to_string(hue) + ", " + std::to_string(saturation) +
+                "%, " + std::to_string(value) + "%)";
+    }
+
     std::string HsvColor::to_hex_string() const {
         // can't just do "std::blah hex << stuff" because the object
         // has to be created first, thus the need for a new line.
+
         std::stringstream hex;
-        hex << std::hex << _red;
-        hex << std::hex << _green;
-        hex << std::hex << _blue;
+        hex << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << _red 
+        << std::setw(2) << _green << std::setw(2) << _blue;
+        // the uppercase is due to retro hexcodes being uppercase.
+        // the setfill and setw are to make sure that the hexcode is 6 digits long.
+        //     previously, if val = 0, it would be 0, not 00.
         // because stringstream is a stream like cout, I can just insert more into it.
         return "#" + hex.str();
     }
