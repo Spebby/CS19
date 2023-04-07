@@ -3,11 +3,11 @@
  */
 
 #include "cs19_hsv_color.h"
+#include <math.h>
 #include <string>
 #include <sstream>
 #include <iostream>
 #include <iomanip>
-#include <math.h>
 #include <vector>
 
 namespace cs19 {
@@ -57,7 +57,8 @@ namespace cs19 {
     }
 
     HsvColor HsvColor::operator~() const {
-        return HsvColor(static_cast<int>(_hue + 180) % 360, _saturation, _value);
+        auto newHue = static_cast<int>(_hue + 180) % 360;
+        return HsvColor(newHue, _saturation, _value);
     }
     HsvColor HsvColor::operator|(const HsvColor &that) const {
         float hue = (_hue + that.hue()) / 2;
