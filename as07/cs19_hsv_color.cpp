@@ -2,15 +2,20 @@
  * @author Thom Mott for CS 19, tomott@jeff.cis.cabrillo.edu
  */
 
+#include "cs19_hsv_color.h"
+#include <bits/stdc++.h>
 #include <string>
 #include <sstream>
 #include <iostream>
-#include "cs19_hsv_color.h"
-#include <bits/stdc++.h>
 
 namespace cs19 {
     HsvColor::HsvColor() {
-        _hue, _saturation, _value, _red, _green, _blue = 0;
+        _hue = 0;
+        _saturation = 0;
+        _value = 0;
+        _red = 0;
+        _green = 0;
+        _blue = 0;
     }
 
     HsvColor::HsvColor(float hue, float saturation, float value) {
@@ -27,20 +32,20 @@ namespace cs19 {
 
         float chroma = saturation * value;
         float X = chroma * (1 - abs(fmod(hue/60.0, 2) - 1));
-        float RGB[3];
-    
-        if (0 <= hue < 60) {
-            float RGB[3] = {chroma, X, 0};
-        } else if (60 <= hue < 120) {
-            float RGB[3] = {X, chroma, 0};
-        } else if (120 <= hue < 180) {
-            float RGB[3] = {0, chroma, X};
-        } else if (180 <= hue < 240) {
-            float RGB[3] = {0, X, chroma};
-        } else if (240 <= hue < 300) {
-            float RGB[3] = {X, 0, chroma};
-        } else {
+        float RGB[3] = {0, 0, 0};
+
+        if (hue >= 300) {
             float RGB[3] = {chroma, 0, X};
+        } else if (hue >= 240) {
+            float RGB[3] = {X, 0, chroma};
+        } else if (hue >= 180) {
+            float RGB[3] = {0, X, chroma};
+        } else if (hue >= 120) {
+            float RGB[3] = {0, chroma, X};
+        } else if (hue >= 60) {
+            float RGB[3] = {X, chroma, 0};
+        } else {
+            float RGB[3] = {chroma, X, 0};
         }
 
         float diff = value - chroma;
@@ -74,7 +79,7 @@ namespace cs19 {
         // has to be created first, thus the need for a new line.
 
         std::stringstream hex;
-        hex << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << _red 
+        hex << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << _red
         << std::setw(2) << _green << std::setw(2) << _blue;
         // the uppercase is due to retro hexcodes being uppercase.
         // the setfill and setw are to make sure that the hexcode is 6 digits long.
