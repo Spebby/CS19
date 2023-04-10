@@ -3,8 +3,8 @@
  * @brief This program decrements the input to 1.
  * 
  * This is an example of a program that takes a command line argument.
- * 
- * @author Jeffery Bergamini for CS 19, jeffery.bergamini@cabrillo.edu
+ *
+ * @author Jeffrey Bergamini for CS 19, jeffery.bergamini@cabrillo.edu
 */
 
 #include <iostream>

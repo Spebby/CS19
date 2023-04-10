@@ -12,12 +12,8 @@
 
 namespace cs19 {
     HsvColor::HsvColor() {
-        _hue = 0;
-        _saturation = 0;
-        _value = 0;
-        _red = 0;
-        _green = 0;
-        _blue = 0;
+        _hue = _saturation = _value = _red = _green = _blue = 0;
+        // cpp style, according to jeff.
     }
 
     HsvColor::HsvColor(float hue, float saturation, float value) {
@@ -33,27 +29,28 @@ namespace cs19 {
         _value = value;
 
         float chroma = saturation * value;
-        float X = chroma * (1 - abs(fmod(hue/60.0, 2) - 1));
+        float huePrime = hue / 60;
+        float X = chroma * (1 - abs(fmod(huePrime, 2) - 1));
         std::vector<float> RGB;
 
-        if (hue >= 300) {
+        if (huePrime >= 5) {
             RGB = {chroma, 0, X};
-        } else if (hue >= 240) {
+        } else if (huePrime >= 4) {
             RGB = {X, 0, chroma};
-        } else if (hue >= 180) {
+        } else if (huePrime >= 3) {
             RGB = {0, X, chroma};
-        } else if (hue >= 120) {
+        } else if (huePrime >= 2) {
             RGB = {0, chroma, X};
-        } else if (hue >= 60) {
+        } else if (huePrime >= 1) {
             RGB = {X, chroma, 0};
         } else {
             RGB = {chroma, X, 0};
         }
 
         float diff = value - chroma;
-        _red = (RGB[0] + diff) * 255;
-        _green = (RGB[1] + diff) * 255;
-        _blue = (RGB[2] + diff) * 255;
+        _red = std::round((RGB[0] + diff) * 255);
+        _green = std::round((RGB[1] + diff) * 255);
+        _blue = std::round((RGB[2] + diff) * 255);
     }
 
     HsvColor HsvColor::operator~() const {
