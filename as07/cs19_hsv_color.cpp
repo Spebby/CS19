@@ -54,7 +54,7 @@ namespace cs19 {
     }
 
     HsvColor HsvColor::operator~() const {
-        auto newHue = static_cast<int>(_hue + 180) % 360;
+        float newHue = fmod((_hue + 180), 360);
         return HsvColor(newHue, _saturation, _value);
     }
     HsvColor HsvColor::operator|(const HsvColor &that) const {
