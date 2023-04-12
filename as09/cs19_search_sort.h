@@ -48,7 +48,7 @@ namespace cs19 {
         for (int i = 0; i < haystack.size(); ++i)
             if (haystack[i] == needle)
                 return i;
-        
+        // returns last
         return -1;
     }
 
@@ -67,8 +67,18 @@ namespace cs19 {
      */
     template <typename IndexedContainer, typename Value>
     int binary_search(const IndexedContainer &haystack, const Value &needle) {
-
-
+        int low = 0;
+        int high = haystack.size() - 1;
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (haystack[mid] == needle)
+                return mid;
+            else if (haystack[mid] < needle)
+                low = mid + 1;
+            else
+                high = mid - 1;
+        }
+        // if nothing is found
         return -1;
     }
 
@@ -84,7 +94,7 @@ namespace cs19 {
      */
     template <typename IndexedContainer>
     void bubble_sort(IndexedContainer &values) {
-        // TODO
+        
     }
 
     /**
