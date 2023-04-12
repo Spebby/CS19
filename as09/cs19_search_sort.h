@@ -137,5 +137,4 @@ namespace cs19 {
     }
 
 }  // namespace cs19
-
 #endif  // CS19_SEARCH_SORT_H_
