@@ -1,4 +1,6 @@
 /**
+ * @file cs19_hsv_color.h
+ * @brief Header file for CS 19's HsvColor class
  * @author Thom Mott for CS 19, tomott@jeff.cis.cabrillo.edu
  */
 

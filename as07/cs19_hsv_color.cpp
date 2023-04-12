@@ -54,6 +54,7 @@ namespace cs19 {
     }
 
     HsvColor HsvColor::operator~() const {
+        // to future me: this is fmod because % sucks; mainly due to C backwards compatability.
         float newHue = fmod((_hue + 180), 360);
         return HsvColor(newHue, _saturation, _value);
     }
