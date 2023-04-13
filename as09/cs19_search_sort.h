@@ -46,7 +46,7 @@ namespace cs19 {
      */
     template <typename IndexedContainer, typename Value>
     int linear_search(const IndexedContainer &haystack, const Value &needle) {
-        for (int i = 0; i < haystack.size(); ++i)
+        for (auto i = 0; i < haystack.size(); ++i)
             if (haystack[i] == needle)
                 return i;
         // returns last
@@ -95,9 +95,9 @@ namespace cs19 {
      */
     template <typename IndexedContainer>
     void bubble_sort(IndexedContainer &values) {
-        for (int step = 0; step < values.size(); ++step)
+        for (auto step = 0; step < values.size(); ++step)
             // compare elements
-            for (int i = 0; i < values.size() - 1; ++i)
+            for (auto i = 0; i < values.size() - 1; ++i)
                 // compare adjacent
                 if (values[i] > values[i + 1]) {
                     auto temp = values[i];
@@ -146,10 +146,10 @@ namespace cs19 {
      */
     template <typename IndexedContainer>
     void selection_sort(IndexedContainer &values) {
-        for (int step = 0; step < values.size(); ++step) {
+        for (auto step = 0; step < values.size(); ++step) {
             int min = step;
             // find min
-            for (int i = step + 1; i < values.size(); ++i)
+            for (auto i = step + 1; i < values.size(); ++i)
                 if (values[i] < values[min])
                     min = i;
             // swap
