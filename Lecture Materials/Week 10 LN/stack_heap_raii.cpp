@@ -25,19 +25,19 @@
 
 // appends the contents of an array of ints to a file, as decimal integer text values, one per line
 void append_to_file(int *array, std::size_t array_len, const std::string &file_path) {
-  // all of the following are local (stack-allocated) variables:
-  //   parameters array, array_len, file_path
-  //   locals out_file, i
-  std::ofstream out_file(file_path, std::ofstream::app);
-  for (std::size_t i = 0; i < array_len; ++i) {
-    out_file << array[i] << '\n';
-  }  // i passes out of scope. It is a fundamental type (unsigned integer), so no destructor.
-  // out_file passes out of scope: Destructor (std::ofstream::~ofstream) will be called.
-  //   std::ofstream::~ofstream estructor will "close" the file, release resources back to OS, etc.
-  //   (You don't need to (and shouldn't) manually call out_file.close().)
-  // file_path, array_len, array pass out of scope.
-  //   file_path is a compound type, but since it is a reference, the object's lifetime doesn't end.
-  //   array_len and array are fundamental types, so no destructor is called.
+    // all of the following are local (stack-allocated) variables:
+    //   parameters array, array_len, file_path
+    //   locals out_file, i
+    std::ofstream out_file(file_path, std::ofstream::app);
+    for (std::size_t i = 0; i < array_len; ++i) {
+        out_file << array[i] << '\n';
+    }  // i passes out of scope. It is a fundamental type (unsigned integer), so no destructor.
+    // out_file passes out of scope: Destructor (std::ofstream::~ofstream) will be called.
+    //   std::ofstream::~ofstream estructor will "close" the file, release resources back to OS, etc.
+    //   (You don't need to (and shouldn't) manually call out_file.close().)
+    // file_path, array_len, array pass out of scope.
+    //   file_path is a compound type, but since it is a reference, the object's lifetime doesn't end.
+    //   array_len and array are fundamental types, so no destructor is called.
 }
 
 int main(int argc, char **argv) {
