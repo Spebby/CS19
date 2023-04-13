@@ -5,6 +5,7 @@
  * @file cs19_search_sort.h
  * @brief Header file for CS 19's search and sort functions
  * @author  Thom Mott for CS 19, tomott@jeff.cis.cabrillo.edu
+ * This assignment has the limitation of not allowing any #include directives.
  */
 namespace cs19 {
 
@@ -98,8 +99,11 @@ namespace cs19 {
             // compare elements
             for (int i = 0; i < values.size() - 1; ++i)
                 // compare adjacent
-                if (values[i] > values[i + 1])
-                    std::swap(values[i], values[i + 1]);
+                if (values[i] > values[i + 1]) {
+                    auto temp = values[i];
+                    values[i] = values[i + 1];
+                    values[i + 1] = temp;
+                }
     }
 
     /**
@@ -116,12 +120,18 @@ namespace cs19 {
      */
     template <typename Iterator>
     void bubble_sort(Iterator first, Iterator last) {
-        for (Iterator step = first; step != last; ++step)
+        for (Iterator step = first; step != last; ++step) {
             // compare elements
-            for (Iterator i = first; i != std::prev(last); ++i)
+            for (Iterator i = first; i != --i; ++i) {
                 // compare adjacent
-                if (*i > *(std::next(i)))
-                    std::swap(*i, *(std::next(i)));
+                auto next = ++i;  // this may not work as intended
+                if (*i > *next) {
+                    auto temp = *i;
+                    *i = *next;
+                    *next = temp;
+                }  // std::swap(*i, *(std::next(i))); legal, but not allowed
+            }
+        }
     }
 
     /**
@@ -143,7 +153,10 @@ namespace cs19 {
                 if (values[i] < values[min])
                     min = i;
             // swap
-            std::swap(values[step], values[min]);
+            auto temp = values[step];
+            values[step] = values[min];
+            values[min] = temp;
+            // std::swap(values[step], values[min]); legal, but not allowed
         }
     }
 
@@ -168,7 +181,10 @@ namespace cs19 {
                 if (*i < *min)
                     min = i;
             // swap
-            std::swap(*step, *min);
+            auto temp = *step;
+            *step = *min;
+            *min = temp;
+            // std::swap(*step, *min); legal, but not allowed
         }
     }
 
