@@ -99,7 +99,7 @@ namespace cs19 {
             for (int i = 0; i < values.size() - 1; ++i)
                 // compare adjacent
                 if (values[i] > values[i + 1])
-                    std::swap(values[i], values[i + 1];
+                    std::swap(values[i], values[i + 1]);
     }
 
     /**
@@ -118,10 +118,10 @@ namespace cs19 {
     void bubble_sort(Iterator first, Iterator last) {
         for (Iterator step = first; step != last; ++step)
             // compare elements
-            for (Iterator i = first; i != last - 1; ++i)
+            for (Iterator i = first; i != std::prev(last); ++i)
                 // compare adjacent
-                if (*i > *(i + 1))
-                    std::swap(*i, *(i + 1));
+                if (*i > *(std::next(i)))
+                    std::swap(*i, *(std::next(i)));
     }
 
     /**
