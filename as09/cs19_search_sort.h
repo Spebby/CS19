@@ -9,6 +9,13 @@
  */
 namespace cs19 {
 
+    template<typename T >
+    void swap (T& a, T& b) {
+        T temp = a;
+        a = b;
+        b = temp;
+    }
+
     /**
      * Returns an iterator to the first element in the range `[first,last)` that compares equal to
      * `val`. If no such element is found, the function returns `last`.
@@ -46,7 +53,7 @@ namespace cs19 {
      */
     template <typename IndexedContainer, typename Value>
     int linear_search(const IndexedContainer &haystack, const Value &needle) {
-        for (auto i = 0; i < haystack.size(); ++i)
+        for (auto i = 0; i < static_cast<int>(haystack.size()); ++i)
             if (haystack[i] == needle)
                 return i;
         // returns last
@@ -69,7 +76,7 @@ namespace cs19 {
     template <typename IndexedContainer, typename Value>
     int binary_search(const IndexedContainer &haystack, const Value &needle) {
         int low = 0;
-        int high = haystack.size() - 1;
+        int high = static_cast<int>(haystack.size()) - 1;
         while (low <= high) {
             int mid = (low + high) * 0.5f;
             if (haystack[mid] == needle)
@@ -95,15 +102,12 @@ namespace cs19 {
      */
     template <typename IndexedContainer>
     void bubble_sort(IndexedContainer &values) {
-        for (auto step = 0; step < values.size(); ++step)
+        for (auto step = 0; step < static_cast<int>(values.size()); ++step)
             // compare elements
-            for (auto i = 0; i < values.size() - 1; ++i)
+            for (auto i = 0; i < static_cast<int>(values.size()) - 1; ++i)
                 // compare adjacent
-                if (values[i] > values[i + 1]) {
-                    auto temp = values[i];
-                    values[i] = values[i + 1];
-                    values[i + 1] = temp;
-                }
+                if (values[i] > values[i + 1])
+                    swap(values[i], values[i + 1]);
     }
 
     /**
@@ -124,12 +128,11 @@ namespace cs19 {
             // compare elements
             for (Iterator i = first; i != --i; ++i) {
                 // compare adjacent
-                auto next = ++i;  // this may not work as intended
-                if (*i > *next) {
-                    auto temp = *i;
-                    *i = *next;
-                    *next = temp;
-                }  // std::swap(*i, *(std::next(i))); legal, but not allowed
+                Iterator next = i;
+                ++next;
+                if (*i > *next)
+                    swap(*i, *next);
+                // std::swap(*i, *(std::next(i))); legal, but not allowed
             }
         }
     }
@@ -146,17 +149,14 @@ namespace cs19 {
      */
     template <typename IndexedContainer>
     void selection_sort(IndexedContainer &values) {
-        for (auto step = 0; step < values.size(); ++step) {
+        for (auto step = 0; step < static_cast<int>(values.size()); ++step) {
             int min = step;
             // find min
-            for (auto i = step + 1; i < values.size(); ++i)
+            for (auto i = step + 1; i < static_cast<int>(values.size()); ++i)
                 if (values[i] < values[min])
                     min = i;
-            // swap
-            auto temp = values[step];
-            values[step] = values[min];
-            values[min] = temp;
-            // std::swap(values[step], values[min]); legal, but not allowed
+
+            swap(values[step], values[min]);
         }
     }
 
@@ -180,11 +180,8 @@ namespace cs19 {
             for (Iterator i = step + 1; i != last; ++i)
                 if (*i < *min)
                     min = i;
-            // swap
-            auto temp = *step;
-            *step = *min;
-            *min = temp;
-            // std::swap(*step, *min); legal, but not allowed
+
+            swap(*step, *min);
         }
     }
 
