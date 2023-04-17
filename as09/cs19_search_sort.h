@@ -9,6 +9,14 @@
  */
 namespace cs19 {
 
+    /**
+     * Swaps the values of two variables.
+     *
+     * @tparam T a type that supports `operator=`
+     *
+     * @param a a variable
+     * @param b a variable
+     */
     template<typename T >
     void swap (T& a, T& b) {
         T temp = a;
@@ -16,9 +24,22 @@ namespace cs19 {
         b = temp;
     }
 
+    /**
+     * @param a an iterator
+     * @return a copy of the iterator at the next element.
+    */
     template<typename T >
-    T next (T& a) {
+    T next (T a) {
         return ++a;
+    }
+
+    /**
+     * @param a an iterator
+     * @return a copy of the iterator at the previous element.
+    */
+    template<typename T >
+    T prev (T a) {
+        return --a;
     }
 
     /**
