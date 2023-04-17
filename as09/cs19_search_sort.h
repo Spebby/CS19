@@ -170,7 +170,7 @@ namespace cs19 {
     template <typename IndexedContainer>
     void selection_sort(IndexedContainer &values) {
         auto length = static_cast<int>(values.size());
-        for (auto step = 0; step < length; ++step) {
+        for (auto step = 0; step < length - 1; ++step) {
             int min = step;
             // find min
             for (auto check = step + 1; check < length; ++check)
