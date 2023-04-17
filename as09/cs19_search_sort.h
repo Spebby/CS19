@@ -28,8 +28,8 @@ namespace cs19 {
      * @param a an iterator
      * @return a copy of the iterator at the next element.
     */
-    template<typename T >
-    T next (T a) {
+    template<typename Iterator>
+    Iterator next (Iterator a) {
         return ++a;
     }
 
@@ -37,8 +37,8 @@ namespace cs19 {
      * @param a an iterator
      * @return a copy of the iterator at the previous element.
     */
-    template<typename T >
-    T prev (T a) {
+    template<typename Iterator>
+    Iterator prev (Iterator a) {
         return --a;
     }
 
@@ -58,10 +58,15 @@ namespace cs19 {
      */
     template <typename Iterator, typename Value>
     Iterator linear_search(Iterator first, Iterator last, const Value &val) {
-        for (; *first != *last; ++first)
+        if (first == last)  // empty range
+            return last;
+
+        while (first != last) {
             if (*first == val)
                 return first;
-        // if nothing is found, return last.
+
+            ++first;
+        }
         return last;
     }
 
@@ -78,15 +83,12 @@ namespace cs19 {
      * `haystack` does not contain `needle`
      */
     template <typename IndexedContainer, typename Value>
-    int linear_search(const IndexedContainer& haystack, const Value& needle) {
-        int i = 0;
-        while (first != last) {
-            if (*first == needle) {
+    int linear_search(const IndexedContainer &haystack, const Value &needle) {
+        auto size = haystack.size();
+        for (auto i = 0; i < size; ++i)
+            if (haystack[i] == needle)
                 return i;
-            }
-            ++first;
-            ++i;
-        }
+        // returns last
         return -1;
     }
 
@@ -132,9 +134,10 @@ namespace cs19 {
      */
     template <typename IndexedContainer>
     void bubble_sort(IndexedContainer &values) {
-        for (auto step = 0; step < static_cast<int>(values.size()); ++step)
+        auto max = static_cast<int>(values.size());
+        for (auto step = 0; step < max; ++step)
             // compare elements
-            for (auto i = 0; i < static_cast<int>(values.size()) - 1; ++i)
+            for (auto i = 0; i < (max - 1); ++i)
                 // compare adjacent
                 if (values[i] > values[i + 1])
                     swap(values[i], values[i + 1]);
@@ -154,15 +157,13 @@ namespace cs19 {
      */
     template <typename Iterator>
     void bubble_sort(Iterator first, Iterator last) {
-        for (Iterator step = first; step != last; ++step) {
-            // compare elements
-            for (Iterator i = first; i != --i; ++i) {
-                // compare adjacent
-                Iterator next = i;
-                ++next;
-                if (*i > *next)
-                    swap(*i, *next);
-                // std::swap(*i, *(std::next(i))); legal, but not allowed
+        for (auto sorted = first; first != last; last = sorted) {
+            sorted = first;
+            for ( auto current = first, prev = first; ++current != last; ++prev ) {
+                if (*current < *prev) {
+                    cs19::swap(current, prev);
+                    sorted = current;
+                }
             }
         }
     }
@@ -179,14 +180,15 @@ namespace cs19 {
      */
     template <typename IndexedContainer>
     void selection_sort(IndexedContainer &values) {
-        for (auto step = 0; step < static_cast<int>(values.size()); ++step) {
+        auto max = static_cast<int>(values.size());
+        for (auto step = 0; step < max; ++step) {
             int min = step;
             // find min
-            for (auto i = step + 1; i < static_cast<int>(values.size()); ++i)
+            for (auto i = step + 1; i < max; ++i)
                 if (values[i] < values[min])
                     min = i;
 
-            swap(values[step], values[min]);
+            cs19::swap(values[step], values[min]);
         }
     }
 
@@ -207,11 +209,12 @@ namespace cs19 {
         for (Iterator step = first; step != last; ++step) {
             Iterator min = step;
             // find min
-            for (Iterator i = next(step); i != last; ++i)
+            auto next = cs19::next(step);
+            for (Iterator i = next; i != last; ++i)
                 if (*i < *min)
                     min = i;
 
-            swap(*step, *min);
+            cs19::swap(*step, *min);
         }
     }
 
