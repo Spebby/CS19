@@ -25,24 +25,6 @@ namespace cs19 {
     }
 
     /**
-     * @param a an iterator
-     * @return a copy of the iterator at the next element.
-    */
-    template<typename Iterator>
-    Iterator next (Iterator a) {
-        return ++a;
-    }
-
-    /**
-     * @param a an iterator
-     * @return a copy of the iterator at the previous element.
-    */
-    template<typename Iterator>
-    Iterator prev (Iterator a) {
-        return --a;
-    }
-
-    /**
      * Returns an iterator to the first element in the range `[first,last)` that compares equal to
      * `val`. If no such element is found, the function returns `last`.
      *
@@ -163,14 +145,15 @@ namespace cs19 {
         bool swapped;
         do {
             swapped = true;
-            for (auto i = first; i != last; ++i) {
-                auto next = cs19::next(i);
-                if (*i > *next) {
-                    cs19::swap(*i, *next);
+            auto current = first, next = first; ++next;
+            while (next != last) {
+                if (*current > *next) {
+                    cs19::swap(*current, *next);
                     swapped = false;
                 }
+                current = next;
+                ++next;
             }
-            cs19::prev(last);
         } while (!swapped);
     }
 
@@ -215,7 +198,8 @@ namespace cs19 {
         for (Iterator step = first; step != last; ++step) {
             Iterator min = step;
             // find min
-            auto next = cs19::next(step);
+            auto next = step;
+            ++next;
             for (Iterator i = next; i != last; ++i)
                 if (*i < *min)
                     min = i;
