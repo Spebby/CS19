@@ -40,7 +40,7 @@ namespace cs19 {
     }
 
     /**
-     * Performs an index-based linear search on an indexable object for a given value.
+     * Performs an index-based linear search on an index-able object for a given value.
      *
      * @tparam IndexedContainer must support `operator[]` and `size()`, e.g. `std::vector`. Container
      * elements must be of template type `Value`.
@@ -61,7 +61,7 @@ namespace cs19 {
     }
 
     /**
-     * Performs an index-based binary search on an indexable object for a given value.
+     * Performs an index-based binary search on an index-able object for a given value.
      * @note Expects data to be pre-sorted.
      * 
      * @tparam IndexedContainer must support `operator[]` and `size()`, e.g. `std::vector`. Container
@@ -78,7 +78,7 @@ namespace cs19 {
         int low = 0;
         int high = static_cast<int>(haystack.size()) - 1;
         while (low <= high) {
-            int mid = (low + high) * 0.5f;
+            int mid = (low + high)/2;
             if (haystack[mid] == needle)
                 return mid;
             else if (haystack[mid] < needle)
@@ -91,7 +91,7 @@ namespace cs19 {
     }
 
     /**
-     * Performs an index-based bubble sort on any indexable container object.
+     * Performs an index-based bubble sort on any index able container object.
      * @note Worst Case: O(n^2)
      * @note Best Case: O(n)
      *
@@ -138,7 +138,7 @@ namespace cs19 {
     }
 
     /**
-     * Performs an index-based selection sort on an indexable object.
+     * Performs an index-based selection sort on an index-able object.
      * @note Worst Case: O(n^2)
      * @note Best Case: O(n^2)
      *
@@ -177,7 +177,7 @@ namespace cs19 {
         for (Iterator step = first; step != last; ++step) {
             Iterator min = step;
             // find min
-            for (Iterator i = step + 1; i != last; ++i)
+            for (Iterator i = *++step; i != last; ++i)
                 if (*i < *min)
                     min = i;
 
