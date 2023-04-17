@@ -18,7 +18,7 @@ namespace cs19 {
      * @param b a variable
      */
     template<typename T >
-    void swap (T& a, T& b) {
+    void swap(T& a, T& b) {
         T temp = a;
         a = b;
         b = temp;
@@ -66,7 +66,7 @@ namespace cs19 {
      */
     template <typename IndexedContainer, typename Value>
     int linear_search(const IndexedContainer &haystack, const Value &needle) {
-        auto size = haystack.size();
+        auto size = static_cast<int>(haystack.size());
         for (auto i = 0; i < size; ++i)
             if (haystack[i] == needle)
                 return i;
@@ -169,13 +169,13 @@ namespace cs19 {
      */
     template <typename IndexedContainer>
     void selection_sort(IndexedContainer &values) {
-        auto max = static_cast<int>(values.size());
-        for (auto step = 0; step < max; ++step) {
+        auto length = static_cast<int>(values.size());
+        for (auto step = 0; step < (length - 2); ++step) {
             int min = step;
             // find min
-            for (auto i = step + 1; i < max; ++i)
-                if (values[i] < values[min])
-                    min = i;
+            for (auto check = step + 1; check < length; ++check)
+                if (values[check] < values[min])
+                    min = check;
 
             cs19::swap(values[step], values[min]);
         }
