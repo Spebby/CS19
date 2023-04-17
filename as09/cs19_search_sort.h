@@ -116,13 +116,18 @@ namespace cs19 {
      */
     template <typename IndexedContainer>
     void bubble_sort(IndexedContainer &values) {
-        auto max = static_cast<int>(values.size());
-        for (auto step = 0; step < max; ++step)
-            // compare elements
-            for (auto i = 0; i < (max - 1); ++i)
+        auto length = static_cast<int>(values.size());
+        bool swapped;
+        do {
+            swapped = true;
+            for (auto i = 0; i < (length - 1); ++i) {
                 // compare adjacent
-                if (values[i] > values[i + 1])
+                if (values[i] > values[i + 1]) {
                     swap(values[i], values[i + 1]);
+                    swapped = false;
+                }
+            }
+        } while (!swapped);
     }
 
     /**
