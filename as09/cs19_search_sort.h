@@ -160,26 +160,18 @@ namespace cs19 {
         if (first == last)  // empty range
             return;
 
-        auto begin = first;
-        
-        bool swapped = false;
-        while (!swapped) {
+        bool swapped;
+        do {
             swapped = true;
-            while (first != last) {
-                auto next = cs19::next(first);
-
-                if (*first > *next) {
-                    cs19::swap(*first, *next);
+            for (auto i = first; i != last; ++i) {
+                auto next = cs19::next(i);
+                if (*i > *next) {
+                    cs19::swap(*i, *next);
                     swapped = false;
                 }
-                
-                if (next == last)
-                    break;
-
-                ++first;
             }
-            first = begin;
-        }
+            cs19::prev(last);
+        } while (!swapped);
     }
 
     /**
