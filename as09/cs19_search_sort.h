@@ -16,6 +16,11 @@ namespace cs19 {
         b = temp;
     }
 
+    template<typename T >
+    T next (T& a) {
+        return ++a;
+    }
+
     /**
      * Returns an iterator to the first element in the range `[first,last)` that compares equal to
      * `val`. If no such element is found, the function returns `last`.
@@ -177,7 +182,7 @@ namespace cs19 {
         for (Iterator step = first; step != last; ++step) {
             Iterator min = step;
             // find min
-            for (Iterator i = *++step; i != last; ++i)
+            for (Iterator i = next(step); i != last; ++i)
                 if (*i < *min)
                     min = i;
 
