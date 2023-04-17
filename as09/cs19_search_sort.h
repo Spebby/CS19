@@ -78,11 +78,15 @@ namespace cs19 {
      * `haystack` does not contain `needle`
      */
     template <typename IndexedContainer, typename Value>
-    int linear_search(const IndexedContainer &haystack, const Value &needle) {
-        for (auto i = 0; i < static_cast<int>(haystack.size()); ++i)
-            if (haystack[i] == needle)
+    int linear_search(const IndexedContainer& haystack, const Value& needle) {
+        int i = 0;
+        while (first != last) {
+            if (*first == needle) {
                 return i;
-        // returns last
+            }
+            ++first;
+            ++i;
+        }
         return -1;
     }
 
