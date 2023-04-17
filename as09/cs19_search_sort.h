@@ -157,14 +157,28 @@ namespace cs19 {
      */
     template <typename Iterator>
     void bubble_sort(Iterator first, Iterator last) {
-        for (auto sorted = first; first != last; last = sorted) {
-            sorted = first;
-            for ( auto current = first, prev = first; ++current != last; ++prev ) {
-                if (*current < *prev) {
-                    cs19::swap(current, prev);
-                    sorted = current;
+        if (first == last)  // empty range
+            return;
+
+        auto begin = first;
+        
+        bool swapped = false;
+        while (!swapped) {
+            swapped = true;
+            while (first != last) {
+                auto next = cs19::next(first);
+
+                if (*first > *next) {
+                    cs19::swap(*first, *next);
+                    swapped = false;
                 }
+                
+                if (next == last)
+                    break;
+
+                ++first;
             }
+            first = begin;
         }
     }
 
