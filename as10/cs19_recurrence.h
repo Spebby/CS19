@@ -145,16 +145,14 @@ namespace cs19 {
      */
     template <typename Function>
     double most_precise(Function func) {
-        bool found = false;
-        int target = 1;
-        double prev = 0;
-        while (!found) {
-            double result = func(target++);
-            if (result == prev)
-                found = true;
+        double prev = func(1);
+        double curr = func(2);
+        unsigned level = 2;
+        while (prev != curr) {
+            prev = curr;
+            curr = func(++level);
         }
-
-        return prev;
+        return curr;
     }
 
     /**
