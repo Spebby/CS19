@@ -8,3 +8,5 @@ as07/tester
 as07/hsv_color_demo.cpp
 as09/cs19_search_sort_test.cpp
 as10/cs19_recurrence_tests.cpp
+as10/makefile
+as10/recurrence
