@@ -9,6 +9,7 @@
 #include <cmath>
 #include <unordered_map>
 #include <vector>
+#include <iostream>
 
 namespace cs19 {
 
@@ -39,25 +40,6 @@ namespace cs19 {
         return fibonacci(i - 1) + fibonacci(i - 2);
     }
 
-    /** A helper function for the phi function that uses memoization to speed up the calculation.*/
-    double phi_helper(unsigned terms, std::vector<double>& cache) {
-        if (terms == 1)
-            return 1;
-
-        if (cache.size() > terms && cache[terms] != 0)
-            return cache[terms];
-
-        double result = std::sqrt(1.0 + phi_helper(terms - 1, cache));
-
-        if (cache.size() <= terms) {
-            cache.push_back(result);
-        } else {
-            cache[terms] = result;
-        }
-
-        return result;
-    }
-
     /**
      * Recursively calculates the golden ratio (often denoted as the Greek letter φ ("phi") via its
      * nested radical representation.
@@ -67,42 +49,9 @@ namespace cs19 {
      * @return phi calculated via the requested number of nested-radical terms
      */
     double phi(unsigned terms) {
-        std::vector<double> cache(terms + 1, 0);
-        return phi_helper(terms, cache);
-    }
-
-    /**
-     * Recursively calculates the golden ratio (often denoted as the Greek letter φ ("phi") via its
-     * nested radical representation.
-     *
-     * @note This is a simple recursive implementation that does not use memoisation.
-     * @see https://en.wikipedia.org/wiki/Golden_ratio
-     * @param terms the number of terms in the nested radical to compute (assumed to be >= 1)
-     * @return phi calculated via the requested number of nested-radical terms
-     */
-    double phiSimple(unsigned terms) {
         if (terms == 1)
             return 1;
-        return sqrt(1.0 + phiSimple(terms - 1));
-    }
-
-    /**A helper function for the rho function that uses memoization to speed up the calculation.*/
-    double rho_helper(unsigned terms, std::vector<double>& cache) {
-        if (terms == 1)
-            return 1;
-
-        if (cache.size() > terms && cache[terms] != 0)
-            return cache[terms];
-
-        double result = std::cbrt(1) + rho_helper(terms - 1, cache);
-
-        if (cache.size() <= terms) {
-            cache.push_back(result);
-        } else {
-            cache[terms] = result;
-        }
-
-        return result;
+        return sqrt(1 + phi(terms - 1));
     }
 
     /**
@@ -114,22 +63,9 @@ namespace cs19 {
      * @return rho calculated via the requested number of nested-radical terms
      */
     double rho(unsigned terms) {
-        std::vector<double> cache(terms + 1, 0);
-        return rho_helper(terms, cache);
-    }
-
-    /**
-     * Recursively calculates the plastic number (often denoted as the Greek letter ρ ("rho")) via its
-     * nested radical representation.
-     * @note This is a simple recursive implementation that does not use memoisation.
-     * @see https://en.wikipedia.org/wiki/Plastic_number
-     * @param terms the number of terms in the nested radical to compute (assumed to be >= 1)
-     * @return rho calculated via the requested number of nested-radical terms
-     */
-    double rhoSimple(unsigned terms) {
         if (terms == 1)
             return 1;
-        return (1^1/3) + rhoSimple(terms - 1);
+        return std::cbrt(1 + rho(terms - 1));
     }
 
     /**
@@ -191,8 +127,16 @@ namespace cs19 {
      * @return index i of the Perrin sequence
      */
     mpz_class perrin(unsigned i, bool memoized = false) {
-        if (i < 3)
-            return 3 - i;
+        if (i <= 2) {
+            switch (i) {
+                case 0:
+                    return 3;
+                case 1:
+                    return 0;
+                case 2:
+                    return 2;
+            }
+        }
 
         if (memoized) {
             static std::unordered_map<unsigned, mpz_class> memos;
@@ -208,6 +152,5 @@ namespace cs19 {
 
         return perrin(i - 2, false) + perrin(i - 3, false);
     }
-
 }  // namespace cs19
 #endif  // _CS19_RECURRENCE_H_
