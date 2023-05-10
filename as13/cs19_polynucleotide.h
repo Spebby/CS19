@@ -393,7 +393,7 @@ class Polynucleotide {
     }
 
  protected:
-    std::map<char, char> complements_;  // use this for determining valid nucleotides and complements
+    std::map<char, char> complements_;  // use this for determining valid nucleotides & complements
     std::string sequence_;              // we'll store the actual nucleotide sequence here
 };
 
