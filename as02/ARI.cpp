@@ -6,6 +6,8 @@
  * @author Thom Mott for CS 19, tomott@jeff.cis.cabrillo.edu
  */
 
+// currently non-functional. too lazy 2 finish
+
 #include <iostream>  // std::c(in|out)
 #include <sstream>   // std::istringstream
 #include <string>    // std::getline

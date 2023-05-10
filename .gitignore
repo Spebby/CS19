@@ -1,1 +1,6 @@
 .vscode/
+as11/linked_list_raw_pointers_test.cpp
+as13/dna_tests.cpp
+as13/cs19_dna.h
+as13/makefile
+as13/dna_tests
