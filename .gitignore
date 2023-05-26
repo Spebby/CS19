@@ -1,6 +1,3 @@
 .vscode/
 as11/linked_list_raw_pointers_test.cpp
-as13/dna_tests.cpp
-as13/cs19_dna.h
-as13/makefile
-as13/dna_tests
+as14/cs19_compact_string_set_autocomplete_test.cpp
