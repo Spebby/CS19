@@ -1,2 +1,0 @@
-Make sure to clear .gitignore at some point. 
-    Though it mostly hides irrelevant test files or headers it's still useful to upload it to the repo.
